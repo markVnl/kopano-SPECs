@@ -1,0 +1,28 @@
+From: Jan Engelhardt <jengelh@inai.de>
+Date: 2018-04-23 09:57:31.270364598 +0200
+References: https://github.com/kisli/vmime/issues/196
+
+Do not tack on any -O/-g flags at the end of the command line,
+as that negates any that we got from %optflags.
+
+---
+ CMakeLists.txt |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+Index: vmime-0.9.2/CMakeLists.txt
+===================================================================
+--- vmime-0.9.2.orig/CMakeLists.txt
++++ vmime-0.9.2/CMakeLists.txt
+@@ -1050,9 +1050,9 @@ ELSE()
+ 			"${CMAKE_CXX_FLAGS} -D_REENTRANT=1 -W -Wall -pedantic -Wpointer-arith -Wold-style-cast -Wconversion -Wcast-align -Wno-long-long"
+ 		)
+ 
+-		SET(CMAKE_CXX_FLAGS_RELEASE "-O2")
+-		SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -g")
+-		SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
++		SET(CMAKE_CXX_FLAGS_RELEASE "")
++		SET(CMAKE_CXX_FLAGS_DEBUG "")
++		SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "")
+ 
+ 		#SET(CMAKE_EXE_LINKER_FLAGS "-s")
+ 
