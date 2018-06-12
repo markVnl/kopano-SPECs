@@ -15,14 +15,15 @@
 # Please submit bugfixes or comments via http://bugs.opensuse.org/
 #
 
+%define release 0.10.20170103git
+%define lname	libvmime1
 
 Name:           libvmime
-%define lname	libvmime1
 Summary:        Library for working with RFC 2822, MIME messages and IMAP/POP/SMTP
 License:        GPL-3.0-or-later
 Group:          Development/Libraries/C and C++
 Version:        0.9.2
-Release:        20.22
+Release:        %release%{?dist}
 Url:            http://vmime.org/
 
 Source:         https://github.com/kisli/vmime/archive/v%version.tar.gz
@@ -30,32 +31,13 @@ Patch1:         libvmime-nodatetime.diff
 Patch2:         no-override-cflags.diff
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  ImageMagick
-%if 0%{?suse_version} < 1310
-BuildRequires:  boost-devel
-%endif
 BuildRequires:  cmake >= 2.8.3
 BuildRequires:  doxygen
 BuildRequires:  gcc-c++
 BuildRequires:  inkscape
-BuildRequires:  libgnutls-devel
-%if !0%{?sle_version}
+BuildRequires:  gnutls-devel
 BuildRequires:  libgsasl-devel
-%endif
-BuildRequires:  pkg-config
-%if 0%{?suse_version} >= 1130
-%define with_pdf 1
-%if 0%{?suse_version} < 1300
-BuildRequires:  texlive-bin-latex
-%endif
-BuildRequires:  texlive-latex
-%if 0%{?suse_version} >= 1230
-BuildRequires:  texlive-collection-fontsrecommended
-BuildRequires:  tex(courier.sty)
-BuildRequires:  tex(fancyheadings.sty)
-BuildRequires:  tex(pcrr7t.tfm)
-BuildRequires:  tex(ucs.sty)
-%endif
-%endif
+BuildRequires:  pkgconfig
 BuildRequires:  xz
 
 %description
@@ -97,37 +79,21 @@ This subpackage contains the headers for the library's API.
 %patch -P 1 -P 2 -p1
 
 %build
-%if 0%{?with_pdf}
-pushd doc/book/
-make book_pdf
-popd
-%endif
 
 cf="%optflags -DVMIME_ALWAYS_GENERATE_7BIT_PARAMETER=1"
 cmake . \
 	-DVMIME_SENDMAIL_PATH:STRING="%_sbindir/sendmail" \
 	-DVMIME_BUILD_SAMPLES:BOOL=OFF \
-%if 0%{?sle_version}
-	-DVMIME_HAVE_SASL_SUPPORT:BOOL=OFF \
-%endif
 	-DVMIME_HAVE_TLS_SUPPORT:BOOL=ON \
 	-DVMIME_BUILD_STATIC_LIBRARY:BOOL=OFF \
 	-DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo" \
 	-DCMAKE_INSTALL_PREFIX:PATH="%_prefix" \
-%if 0%{?suse_version} >= 1310
-	-DCMAKE_CXX_FLAGS:STRING="$cf -std=gnu++11" \
-%else
 	-DCMAKE_CXX_FLAGS:STRING="$cf -std=gnu++0x" \
-%endif
 	-DCMAKE_C_FLAGS:STRING="$cf"
 make %{?_smp_mflags} VERBOSE=1
 
 %install
 b="%buildroot"
-%if 0%{?with_pdf}
-mkdir -p "$b/%_docdir/%name"
-cp -a doc/book/book.pdf "$b/%_docdir/%name/"
-%endif
 make install DESTDIR="$b"
 find "$b" -type f -name "*.la" -delete
 
@@ -149,6 +115,8 @@ find "$b" -type f -name "*.la" -delete
 %endif
 
 %changelog
+* Tue Jun 1 2018 mark.verlinde@gmail.com
+-  adapt for build (centos) el7
 * Mon Apr 23 2018 jengelh@inai.de
 - Add no-override-cflags.diff so that vmime becomes externally
   buildable with other -O/-g levels.
