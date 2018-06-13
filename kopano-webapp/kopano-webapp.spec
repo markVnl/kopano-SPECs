@@ -1,6 +1,7 @@
 #
 # spec file for package kopano-webapp
 #
+# Copyright (c) 2017 Mark Verlinde
 # Copyright (c) 2018 SUSE LINUX GmbH, Nuernberg, Germany.
 # Copyright (c) 2016 Kopano B.V.
 #
@@ -13,22 +14,24 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# Please submit bugfixes or comments via http://bugs.opensuse.org/
-#
-
+%define release 0.2
 
 %define langdir %{_datadir}/%{name}/server/language
 %define plugindir %{_datadir}/%{name}/plugins
+
 Name:           kopano-webapp
-Version:        3.4.13
-Release:        40.1
+Version:        3.4.15final
+Release:        %release%{?dist}
 Summary:        Improved WebApp for Kopano
+
 License:        AGPL-3.0
-Group:          Productivity/Networking/Email/Clients
 Url:            https://kopano.io
-Source:         kopano-webapp-%{version}.tar.xz
+Source:         https://github.com/Kopano-dev/kopano-webapp/archive/v%{version}.tar.gz
+
 BuildRequires:  ant
 BuildRequires:  xz
+BuildRequires:  libxml2
+
 Requires:       %{name}-lang = %{version}
 Requires:       mod_php_any
 Requires:       php >= 5.3
@@ -36,17 +39,9 @@ Requires:       php-gettext
 Requires:       php-mapi
 Requires:       php-openssl
 Requires:       php-zlib
-Suggests:       php-opcache
-BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+
 BuildArch:      noarch
-%if 0%{?suse_version}
-BuildRequires:  fdupes
-%endif
-%if 0%{?suse_version} >= 1220
-BuildRequires:  libxml2-tools
-%else
-BuildRequires:  libxml2
-%endif
+BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
 %description
 Provides a web-client written in PHP that makes use of Jason and ExtJS
@@ -62,8 +57,6 @@ Group:          System/Localization
 Provides translations to the package %{name}.
 
 %package contactfax
-Version:        3.4.13
-Release:        40.1
 Summary:        Contact fax plugin for kopano-webapp
 Group:          Productivity/Networking/Email/Clients
 
@@ -72,8 +65,6 @@ Opens a new "create mail" dialog with contact's fax number in the To:
 field of the email.
 
 %package folderwidgets
-Version:        3.4.13
-Release:        40.1
 Summary:        Folder widgets plugin for kopano-webapp
 Group:          Productivity/Networking/Email/Clients
 
@@ -82,8 +73,6 @@ A collection of widgets which can show the contents of some of the
 default folders for a user.
 
 %package gmaps
-Version:        3.4.13
-Release:        40.1
 Summary:        Google Maps plugin for kopano-webapp
 Group:          Productivity/Networking/Email/Clients
 
@@ -91,8 +80,6 @@ Group:          Productivity/Networking/Email/Clients
 Shows contact address on Google Maps.
 
 %package pimfolder
-Version:        3.4.13
-Release:        40.1
 Summary:        Plugin for kopano-webapp to quickly move mail into another folder
 Group:          Productivity/Networking/Email/Clients
 
@@ -100,8 +87,6 @@ Group:          Productivity/Networking/Email/Clients
 Kopano PIM plugin, allows you to set-up a folder quickly moving your mail to another folder; like "Archive" in GTD
 
 %package quickitems
-Version:        3.4.13
-Release:        40.1
 Summary:        Quick Items plugin for kopano-webapp
 Group:          Productivity/Networking/Email/Clients
 
@@ -110,8 +95,6 @@ Special widgets for easily creating new Mails, Appointments, Contacts,
 Tasks and Notes.
 
 %package titlecounter
-Version:        3.4.13
-Release:        40.1
 Summary:        Title counter plugin for kopano-webapp
 Group:          Productivity/Networking/Email/Clients
 
@@ -119,8 +102,6 @@ Group:          Productivity/Networking/Email/Clients
 Plugin to show number of unread messages in the window title.
 
 %package webappmanual
-Version:        3.4.13
-Release:        40.1
 Summary:        Manual plugin for kopano-webapp
 Group:          Productivity/Networking/Email/Clients
 
@@ -128,8 +109,6 @@ Group:          Productivity/Networking/Email/Clients
 Plugin with manual for Kopano WebApp
 
 %package zdeveloper
-Version:        3.4.13
-Release:        40.1
 Summary:        Developer plugin for kopano-webapp
 Group:          Development/Tools/Debuggers
 
@@ -139,7 +118,7 @@ Shows all available insertion points on the screen.
 %prep
 %setup -q
 find . -type f "(" -name "*.js" -o -name "*.php" ")" \
-	-exec chmod a-x "{}" "+";
+  -exec chmod a-x "{}" "+";
 echo "%{version}" > version
 
 %build
@@ -150,12 +129,12 @@ b="%{buildroot}";
 d="$b/%{_datadir}";
 mkdir -p "$d";
 cp -a deploy "$d/%{name}";
-mkdir -p "$b/%{_sysconfdir}/apache2/conf.d"
-mv "$d/%{name}/kopano-webapp.conf" "$b/%{_sysconfdir}/apache2/conf.d"
+mkdir -p "$b/%{_sysconfdir}/httpd/conf.d"
+mv "$d/%{name}/kopano-webapp.conf" "$b/%{_sysconfdir}/httpd/conf.d"
 mkdir -p "$b/%{_sysconfdir}/kopano/webapp"
 mv "$d/%{name}/config.php.dist" "$b/%{_sysconfdir}/kopano/webapp/config.php"
 ln -s "%{_sysconfdir}/kopano/webapp/config.php" \
-	"$d/%{name}/config.php"
+  "$d/%{name}/config.php"
 rm "$d/%{name}/debug.php.dist"
 mkdir -p "$b%{_localstatedir}/lib/%{name}/tmp"
 %if 0%{?fdupes:1}
@@ -170,16 +149,16 @@ mkdir -p "$b%{_localstatedir}/lib/%{name}/tmp"
 %dir %{_sysconfdir}/kopano
 %dir %{_sysconfdir}/kopano/webapp
 %config(noreplace) %{_sysconfdir}/kopano/webapp/config.php
-%dir %{_sysconfdir}/apache2
-%dir %{_sysconfdir}/apache2/conf.d
-%config(noreplace) %{_sysconfdir}/apache2/conf.d/kopano-webapp.conf
+%dir %{_sysconfdir}/httpd
+%dir %{_sysconfdir}/httpd/conf.d
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/kopano-webapp.conf
 %dir %{_localstatedir}/lib/kopano-webapp
-%dir %attr(0775, wwwrun, www) %{_localstatedir}/lib/kopano-webapp/tmp
+%dir %attr(0775, apache, apache) %{_localstatedir}/lib/kopano-webapp/tmp
 
 %files lang
 %defattr(-,root,root)
 %dir %{langdir}
-#lang(bg_BG) %langdir/bg_BG.UTF-8
+#lang(bg_BG) %%langdir/bg_BG.UTF-8
 %lang(ca_ES) %{langdir}/ca_ES.UTF-8
 %lang(cs_CZ) %{langdir}/cs_CZ.UTF-8
 %lang(da_DK) %{langdir}/da_DK.UTF-8
@@ -262,6 +241,11 @@ mkdir -p "$b%{_localstatedir}/lib/%{name}/tmp"
 %{plugindir}/zdeveloper
 
 %changelog
+* Mon Jun 11 2018 mark.verlinde@gmail.com
+- Sanitize spec for (centos) el7 build
+- Update to 3.4.15final
+  * == Full changelog ==
+  * https://documentation.kopano.io/kopano_changelog/webapp.html
 * Wed May 16 2018 bosim@opensuse.org
 - Update to 3.4.13
 - Full changelog:
@@ -284,7 +268,7 @@ mkdir -p "$b%{_localstatedir}/lib/%{name}/tmp"
   * KW-2028 Attachment not send when address book is open while
     auto-saving
 - Full changelog:
-  https://documentation.kopano.io/kopano_changelog/webapp.html
+https://documentation.kopano.io/kopano_changelog/webapp.html
 * Mon Jan 22 2018 bosim@opensuse.org
 - Suggesting php-opcache (speeds up WebApp quite some)
 * Sat Jan 20 2018 bosim@opensuse.org

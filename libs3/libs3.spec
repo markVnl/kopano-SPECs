@@ -1,6 +1,7 @@
 #
 # spec file for package libs3
 #
+# Copyright (c) 2018 Mark Verlinde
 # Copyright (c) 2017 SUSE LINUX GmbH, Nuernberg, Germany.
 #
 # All modifications and additions to the file contributed by third parties
@@ -12,27 +13,26 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# Please submit bugfixes or comments via http://bugs.opensuse.org/
-#
+%global commit  fd8b149044e429ad30dc4c918f0713cdd40aadd2
+%global commit_short %(c=%{commit}; echo ${c:0:7})
 
-
-%define version_unconverted 4.1.git257
+%define release 0.1
+%define lname libs3-4
 
 Name:           libs3
-%define lname	libs3-4
-Version:        4.1.git257
-Release:        9.13
+Version:        4.1
+Release:        %{release}.git%{commit_short}%{?dist}
 Summary:        C Library and tools for Amazon S3 access
 License:        LGPL-3.0+
 Group:          Development/Libraries/C and C++
-Url:            https://aws.amazon.com/developertools/Amazon-S3/1648
+Url:            https://github.com/bji/libs3
 
-Source:         %name-%version.tar.xz
+Source:         https://github.com/bji/%{name}/archive/%{commit}/%{name}-%{version}-%{commit_short}.tar.gz
 Patch2:         s3-am.diff
-BuildRoot:      %{_tmppath}/%{name}-%{version}-build
+
 BuildRequires:  automake
 BuildRequires:  libtool >= 2
-BuildRequires:  pkg-config
+BuildRequires:  pkgconfig
 BuildRequires:  xz
 BuildRequires:  pkgconfig(libcrypto)
 BuildRequires:  pkgconfig(libcurl)
@@ -70,7 +70,7 @@ Group:          System/Management
 A command-line frontend for Amazon S3 access.
 
 %prep
-%setup -q
+%setup -q -n %{name}-%{commit}
 %patch -P 2 -p1
 
 %build
@@ -95,12 +95,15 @@ rm -f "%buildroot/%_libdir"/*.la
 %defattr(-,root,root)
 %_includedir/libs3.h
 %_libdir/libs3.so
-
 %files tools
 %defattr(-,root,root)
 %_bindir/s3
 
 %changelog
+* Tue Jun 1 2018 mark.verlinde@gmail.com
+-  adapt for build (centos) el7
+  * Build from git(hub) sources -
+    commit fd8b149044e429ad30dc4c918f0713cdd40aadd2
 * Thu Jul 20 2017 jengelh@inai.de
 - Update to new snapshot 4.1.git257
   * Adapted v4 signature construction for Linux.

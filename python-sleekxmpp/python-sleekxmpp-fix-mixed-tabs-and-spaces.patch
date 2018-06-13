@@ -1,0 +1,11 @@
+--- sleekxmpp/plugins/xep_0323/device.py.orig	2014-05-16 13:20:31.937350022 +0200
++++ sleekxmpp/plugins/xep_0323/device.py	2014-05-16 13:21:01.498312436 +0200
+@@ -95,7 +95,7 @@
+                                 Error details when a request failed. 
+ 
+ 		"""
+-                logging.debug("request_fields called looking for fields %s",fields)
++		logging.debug("request_fields called looking for fields %s",fields)
+ 		if len(fields) > 0:
+ 			# Check availiability
+ 			for f in fields:
