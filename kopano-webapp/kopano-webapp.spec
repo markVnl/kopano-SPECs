@@ -33,7 +33,6 @@ BuildRequires:  xz
 BuildRequires:  libxml2
 
 Requires:       %{name}-lang = %{version}
-Requires:       mod_php_any
 Requires:       php >= 5.3
 Requires:       php-gettext
 Requires:       php-mapi
