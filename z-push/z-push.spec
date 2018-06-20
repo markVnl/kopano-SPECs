@@ -1,6 +1,7 @@
 #
 # spec file for package z-push
 #
+# Copyright (c) 2018 Mark Verlinde
 # Copyright (c) 2018 SUSE LINUX GmbH, Nuernberg, Germany.
 #
 # All modifications and additions to the file contributed by third parties
@@ -12,15 +13,12 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# Please submit bugfixes or comments via http://bugs.opensuse.org/
-#
 
+%define release 0.1
 
-%define wwwroot %{_prefix}/share
-%define zpush_dir %{wwwroot}/z-push
 Name:           z-push
 Version:        2.3.9
-Release:        2.2
+Release:        %release%{?dist}
 Summary:        An implementation of Microsoft's ActiveSync protocol
 License:        AGPL-3.0
 Group:          Productivity/Networking/Email/Utilities
@@ -37,10 +35,8 @@ Requires:       php-soap
 Requires:       php-sysvmsg
 Requires:       php-sysvsem
 Requires:       php-sysvshm
-Recommends:     php-imap
-Recommends:     php-curl
-Suggests:       apache2
-Suggests:       mod_php_any
+Requires:       php-imap
+Requires:       php-curl
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildArch:      noarch
 
@@ -57,59 +53,61 @@ be connected and synced with these devices.
 %build
 
 %install
-mkdir -p "%{buildroot}/%{zpush_dir}"
-cp -a * "%{buildroot}/%{zpush_dir}/"
-rm -f "%{buildroot}/%{zpush_dir}/"{INSTALL,LICENSE}
+mkdir -p "%{buildroot}/%{_datarootdir}/z-push"
+cp -a * "%{buildroot}/%{_datarootdir}/z-push/"
+rm -f "%{buildroot}/%{_datarootdir}/z-push/"{INSTALL,LICENSE}
 
 mkdir -p "%{buildroot}/%{_sysconfdir}/z-push";
 mkdir -p "%{buildroot}/%{_sysconfdir}/z-push/backend";
 # Global config
-mv "%{buildroot}/%{zpush_dir}/config.php" "%{buildroot}/%{_sysconfdir}/z-push/config.php";
-ln -s "%{_sysconfdir}/z-push/config.php" "%{buildroot}/%{zpush_dir}/config.php";
+mv "%{buildroot}/%{_datarootdir}/z-push/config.php" "%{buildroot}/%{_sysconfdir}/z-push/config.php";
+ln -s "%{_sysconfdir}/z-push/config.php" "%{buildroot}/%{_datarootdir}/z-push/config.php";
 # Kopano backend config
-mv "%{buildroot}/%{zpush_dir}/backend/kopano/config.php" "%{buildroot}/%{_sysconfdir}/z-push/backend/kopano.config.php";
-ln -s "%{_sysconfdir}/z-push/backend/kopano.config.php" "%{buildroot}/%{zpush_dir}/backend/kopano/config.php";
+mv "%{buildroot}/%{_datarootdir}/z-push/backend/kopano/config.php" "%{buildroot}/%{_sysconfdir}/z-push/backend/kopano.config.php";
+ln -s "%{_sysconfdir}/z-push/backend/kopano.config.php" "%{buildroot}/%{_datarootdir}/z-push/backend/kopano/config.php";
 # Combined backend config
-mv "%{buildroot}/%{zpush_dir}/backend/combined/config.php" "%{buildroot}/%{_sysconfdir}/z-push/backend/combined.config.php";
-ln -s "%{_sysconfdir}/z-push/backend/combined.config.php" "%{buildroot}/%{zpush_dir}/backend/combined/config.php";
-# IMAP
-mv "%{buildroot}/%{zpush_dir}/backend/imap/config.php" "%{buildroot}/%{_sysconfdir}/z-push/backend/imap.config.php";
-ln -s "%{_sysconfdir}/z-push/backend/imap.config.php" "%{buildroot}/%{zpush_dir}/backend/imap/config.php";
-# Caldav
-mv "%{buildroot}/%{zpush_dir}/backend/caldav/config.php" "%{buildroot}/%{_sysconfdir}/z-push/backend/caldav.config.php";
-ln -s "%{_sysconfdir}/z-push/backend/caldav.config.php" "%{buildroot}/%{zpush_dir}/backend/caldav/config.php";
-# Carddav
-mv "%{buildroot}/%{zpush_dir}/backend/carddav/config.php" "%{buildroot}/%{_sysconfdir}/z-push/backend/carddav.config.php";
-ln -s "%{_sysconfdir}/z-push/backend/carddav.config.php" "%{buildroot}/%{zpush_dir}/backend/carddav/config.php";
+mv "%{buildroot}/%{_datarootdir}/z-push/backend/combined/config.php" "%{buildroot}/%{_sysconfdir}/z-push/backend/combined.config.php";
+ln -s "%{_sysconfdir}/z-push/backend/combined.config.php" "%{buildroot}/%{_datarootdir}/z-push/backend/combined/config.php";
+# IMAP backend config
+mv "%{buildroot}/%{_datarootdir}/z-push/backend/imap/config.php" "%{buildroot}/%{_sysconfdir}/z-push/backend/imap.config.php";
+ln -s "%{_sysconfdir}/z-push/backend/imap.config.php" "%{buildroot}/%{_datarootdir}/z-push/backend/imap/config.php";
+# Caldav backend config
+mv "%{buildroot}/%{_datarootdir}/z-push/backend/caldav/config.php" "%{buildroot}/%{_sysconfdir}/z-push/backend/caldav.config.php";
+ln -s "%{_sysconfdir}/z-push/backend/caldav.config.php" "%{buildroot}/%{_datarootdir}/z-push/backend/caldav/config.php";
+# Carddav backend config
+mv "%{buildroot}/%{_datarootdir}/z-push/backend/carddav/config.php" "%{buildroot}/%{_sysconfdir}/z-push/backend/carddav.config.php";
+ln -s "%{_sysconfdir}/z-push/backend/carddav.config.php" "%{buildroot}/%{_datarootdir}/z-push/backend/carddav/config.php";
 
-mkdir -p "%{buildroot}/%{_sysconfdir}/apache2/conf.d";
+mkdir -p "%{buildroot}/%{_sysconfdir}/httpd/conf.d";
 install -Dpm 644 %{SOURCE1} \
-	"%{buildroot}/%{_sysconfdir}/apache2/conf.d/z-push.conf";
+  "%{buildroot}/%{_sysconfdir}/httpd/conf.d/z-push.conf";
 install -Dpm 644 %{SOURCE2} \
-	"%{buildroot}/%{_sysconfdir}/apache2/conf.d/z-push-autodiscover.conf";
+  "%{buildroot}/%{_sysconfdir}/httpd/conf.d/z-push-autodiscover.conf";
 mkdir -p "%{buildroot}/%{_localstatedir}/lib/z-push";
 mkdir -p "%{buildroot}/%{_localstatedir}/log/z-push";
 
 %files
 %defattr(-, root, root)
 %dir %{_sysconfdir}/z-push
-%dir %{_sysconfdir}/z-push/backend/
-%config(noreplace) %attr(0640,root,www) %{_sysconfdir}/z-push/config.php
-%config(noreplace) %attr(0640,root,www) %{_sysconfdir}/z-push/backend/kopano.config.php
-%config(noreplace) %attr(0640,root,www) %{_sysconfdir}/z-push/backend/combined.config.php
-%config(noreplace) %attr(0640,root,www) %{_sysconfdir}/z-push/backend/imap.config.php
-%config(noreplace) %attr(0640,root,www) %{_sysconfdir}/z-push/backend/caldav.config.php
-%config(noreplace) %attr(0640,root,www) %{_sysconfdir}/z-push/backend/carddav.config.php
-%dir %{_sysconfdir}/apache2
-%dir %{_sysconfdir}/apache2/conf.d
-%config(noreplace) %attr(0640,root,root) %{_sysconfdir}/apache2/conf.d/z-push.conf
-%config(noreplace) %attr(0640,root,root) %{_sysconfdir}/apache2/conf.d/z-push-autodiscover.conf
-%{zpush_dir}/
-%attr(750,wwwrun,www) %dir %{_localstatedir}/lib/z-push
-%attr(750,wwwrun,www) %dir %{_localstatedir}/log/z-push
+%dir %{_sysconfdir}/z-push/backend
+%config(noreplace) %attr(0640,root,apache) %{_sysconfdir}/z-push/config.php
+%config(noreplace) %attr(0640,root,apache) %{_sysconfdir}/z-push/backend/kopano.config.php
+%config(noreplace) %attr(0640,root,apache) %{_sysconfdir}/z-push/backend/combined.config.php
+%config(noreplace) %attr(0640,root,apache) %{_sysconfdir}/z-push/backend/imap.config.php
+%config(noreplace) %attr(0640,root,apache) %{_sysconfdir}/z-push/backend/caldav.config.php
+%config(noreplace) %attr(0640,root,apache) %{_sysconfdir}/z-push/backend/carddav.config.php
+%dir %{_sysconfdir}/httpd
+%dir %{_sysconfdir}/httpd/conf.d
+%config(noreplace) %attr(0640,root,root) %{_sysconfdir}/httpd/conf.d/z-push.conf
+%config(noreplace) %attr(0640,root,root) %{_sysconfdir}/httpd/conf.d/z-push-autodiscover.conf
+%{_datarootdir}/z-push/
+%attr(750,apache,apache) %dir %{_localstatedir}/lib/z-push
+%attr(750,apache,apache) %dir %{_localstatedir}/log/z-push
 %doc LICENSE TRADEMARKS
 
 %changelog
+*Wed Jun  20 2018 mark.verlinde@gmail.com
+- refactor spec for (centos) el7 build
 * Thu Feb  8 2018 bosim@opensuse.org
 - Updated to 2.3.9
   * [ZP-1339] Replace removed PHP-MAPI functions

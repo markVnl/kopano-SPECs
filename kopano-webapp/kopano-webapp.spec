@@ -124,21 +124,17 @@ echo "%{version}" > version
 ant deploy deploy-plugins;
 
 %install
-b="%{buildroot}";
-d="$b/%{_datadir}";
-mkdir -p "$d";
-cp -a deploy "$d/%{name}";
-mkdir -p "$b/%{_sysconfdir}/httpd/conf.d"
-mv "$d/%{name}/kopano-webapp.conf" "$b/%{_sysconfdir}/httpd/conf.d"
-mkdir -p "$b/%{_sysconfdir}/kopano/webapp"
-mv "$d/%{name}/config.php.dist" "$b/%{_sysconfdir}/kopano/webapp/config.php"
+
+mkdir -p "%{buildroot}/%{_datadir}";
+cp -a deploy "%{buildroot}/%{_datadir}/%{name}";
+mkdir -p "%{buildroot}/%{_sysconfdir}/httpd/conf.d"
+mv "%{buildroot}/%{_datadir}/%{name}/kopano-webapp.conf" "%{buildroot}/%{_sysconfdir}/httpd/conf.d"
+mkdir -p "%{buildroot}/%{_sysconfdir}/kopano/webapp"
+mv "%{buildroot}/%{_datadir}/%{name}/config.php.dist" "%{buildroot}/%{_sysconfdir}/kopano/webapp/config.php"
 ln -s "%{_sysconfdir}/kopano/webapp/config.php" \
-  "$d/%{name}/config.php"
-rm "$d/%{name}/debug.php.dist"
-mkdir -p "$b%{_localstatedir}/lib/%{name}/tmp"
-%if 0%{?fdupes:1}
-%fdupes %{buildroot}/%{_prefix}
-%endif
+  "%{buildroot}/%{_datadir}/%{name}/config.php"
+rm "%{buildroot}/%{_datadir}/%{name}/debug.php.dist"
+mkdir -p "%{buildroot}%{_localstatedir}/lib/%{name}/tmp"
 
 %files
 %defattr(-,root,root)
