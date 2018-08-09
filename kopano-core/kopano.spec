@@ -18,7 +18,7 @@
 %define release 0.1
 
 Name:           kopano
-Version:        8.6.2
+Version:        8.6.6
 Release:        %release%{?dist}
 Summary:        Groupware server suite
 License:        AGPL-3.0-only
@@ -534,24 +534,23 @@ make V=1 %{?_smp_mflags}
 popd
 
 %install
-b="%buildroot"
 %make_install -C obj-python2/
-find "$b" -type f -name "*.la" -print -delete
+find %{buildroot} -type f -name "*.la" -print -delete
 # no headers for these two
-rm -Rfv "$b/%_libdir/libkcpyconv.so" "$b/%_libdir/libkcpydirector.so"
+rm -Rfv %{buildroot}/%_libdir/libkcpyconv.so %{buildroot}/%_libdir/libkcpydirector.so
 
 # for (centos) el7 we only build python2
 for i in kopano_backup kopano_cli kopano_migration_pst kopano_presence \
     kopano_search kopano_spamd kopano_utils; do
-	rm -Rf "$b/%python3_sitelib/$i"*
+	rm -Rf %{buildroot}/%python3_sitelib/$i*
 done
 
 # distro-specifics
 
 # some default dirs
-mkdir -p "$b/%_defaultdocdir" "$b/var/lib/kopano/autorespond" "$b/var/lib/kopano/spamd/spam"
-mkdir -p "$b/%_localstatedir/log/kopano"
-chmod 750 "$b/%_localstatedir/log/kopano"
+mkdir -p %{buildroot}/%_defaultdocdir %{buildroot}/%{_sharedstatedir}/kopano/autorespond %{buildroot}/%{_sharedstatedir}/kopano/spamd/spam
+mkdir -p %{buildroot}/%_localstatedir/log/kopano
+chmod 750 %{buildroot}/%_localstatedir/log/kopano
 %find_lang kopano
 
 %triggerpostun archiver -- kopano-archiver
@@ -1153,6 +1152,7 @@ fi
 %_mandir/man*/kopano-storeadm.*
 %dir %_libexecdir/kopano
 %_libexecdir/kopano/mapitime
+%_libexecdir/kopano/kscriptrun
 %python_sitelib/kopano_cli/
 %python_sitelib/kopano_cli*.egg-info
 
@@ -1241,6 +1241,17 @@ fi
 %python_sitelib/zarafa-*.egg-info
 
 %changelog
+* Thu Aug 09 2018 mark.verlinde@gmail.com
+- Rebuild for centos new upstream release 8.6.6
+  * clean-up spec
+* Mon Aug 06 2018 - jengelh@inai.de
+- Update to new upstream release 8.6.6
+  * ical: handle double quotes in Content-Type header
+  * server: repair broken timing log messages for ldapplugin
+  * php7-ext: cure stack corruption in mapi_vcftomapi
+  * gateway: avoid uncaught exception when client disconnects midway
+  * dagent: avoid always running into K-2383
+  * server: avoid SSL crash near ERR_clear_error on shutdown
 * Tue Jun 12 2018 mark.verlinde@gmail.com
 - Update to new upstream release 8.6.2
   * Sanitize spec for (centos) el7 build 
