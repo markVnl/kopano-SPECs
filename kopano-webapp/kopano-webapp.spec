@@ -20,7 +20,7 @@
 %define plugindir %{_datadir}/%{name}/plugins
 
 Name:           kopano-webapp
-Version:        3.4.15final
+Version:        3.4.19
 Release:        %release%{?dist}
 Summary:        Improved WebApp for Kopano
 
@@ -236,6 +236,59 @@ mkdir -p "%{buildroot}%{_localstatedir}/lib/%{name}/tmp"
 %{plugindir}/zdeveloper
 
 %changelog
+* Thu Aug 09 2018 mark.verlinde@gmail.com
+- Update to 3.4.19
+  * == Fixes ==	 
+  - KW-1958 Country code jumps to the wrong field
+  - KW-2528 Basic shortcuts are not enabled by default when kopano-files is not installed
+  - KW-2705 Broken members of distributionlist break the whole list
+  - KW-1728 Xss injection via description and image urls in what’s new dialog
+  - KW-2237	Removing attachment and send meeting request still have the attachment
+  - KW-2575	Canceled attachments are still uploaded
+  - KW-2685	Xss via components names
+  - KW-2688	Deleting a gab user which is part of a distribution list breaks the list
+  - KW-2689	Accepting meeting request in shared store throws error
+  - KW-1277	Task request data not visible when previewing in small window
+  - KW-1890	German spellchecker marks some common abbreviation as incorrect
+  - KW-2384	Deleting a kopano-contact removes mailaddress in existing mails
+  - KW-2509	Unable to download attachment from popout and preview pane
+  - KW-2539	Large folder structures get scrambled after copying a folder
+  - KW-2632	Opening task / todo folder in embedded window throws error
+  - KW-2661	Undefined offset errors when opening a task request
+  - KW-428 	Clicking outside of the copy/move dialog selects a folder
+  - KW-872 	Error occurs when editing local contact via address book
+  - KW-1194	“add new...” e-mail address dialog has too much height by default
+  - KW-1362	Webapp should handle ‘broken’ freebusy entryid
+  - KW-2317	Mail sent as attachment can’t be imported
+  - KW-2360	Html ampersand code visible in link
+  - KW-2383	Organizer should be updated when selected “create in calendar” is changed
+  - KW-2436	Losing category when receiving update for meeting request
+  - KW-2452	Send as email when selecting contact, distribution list and email freezes the to send email
+  - KW-2526	Unable to delete assigned tasks from public folder
+  - KW-2546	Infinite scroll loading information is not reset when switching folders
+  - KW-2584	Unable to delete search folder when it contains messages
+  - KW-2625	Unable to upload certificates
+  - KW-2626	Hover card is missing send new mail icon
+  - KW-2651	Invalid html in notifier message
+  * == Enhancements == 	 
+  - KW-1969	Add to favorites dialog remove ‘folder name’
+  - KW-2267	Refactor reminder dialog iconclass code
+  - KW-2604	Build webapp for ucs 4.3
+  - KW-2612	Ucs 4.3 spellchecker plugin support
+  - KW-2613	Ucs 4.3 support for plugin mattermost
+  - KW-2614	Ucs 4.3 support for desktop notification plugin
+  - KW-1127	Notes: remove unused functions
+  - KW-2127	Add category as an optional filter in search tools
+  - KW-2212	Open reminder dialog from reminder button in menu bar
+  - KW-2564	Add support for simple json themes
+  - KW-2606	Use mapi_deferred_errors flag when opening a table
+  - KW-2654	Refactor common code
+  - KW-463 	Reloading pop-out should not clear unsaved content
+  - KW-2322	Reposition pagination panel of the mail grid
+  - KW-2335	Introduce possibility to show more information about ‘message could not be saved’
+  - KW-2556	Improve loading of recurrences
+  - KW-2588	Add delay to hover card pop-up
+  - KW-2598 Implement dark tooltips
 * Mon Jun 11 2018 mark.verlinde@gmail.com
 - Sanitize spec for (centos) el7 build
 - Update to 3.4.15final
