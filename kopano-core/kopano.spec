@@ -17,6 +17,15 @@
 
 %define release 0.1
 
+%define with_rh_php71 1
+%if %with_rh_php71
+%define php_prefix php71
+%else
+%define php_prefix php
+%endif
+
+%define apache_group apache
+
 Name:           kopano
 Version:        8.6.6
 Release:        %release%{?dist}
@@ -27,7 +36,6 @@ Url:            https://kopano.io/
 Source:         https://github.com/Kopano-dev/kopano-core/archive/kopanocore-%{version}.tar.gz
 Patch0:         jsoncpp_0.x.y_branch.patch
 BuildRoot:      %{_tmppath}/kopanocore-%{version}
-BuildRequires:  gcc-c++ >= 4.8
 BuildRequires:  gettext-devel
 BuildRequires:  gperftools-devel
 BuildRequires:  gsoap-devel >= 2.8.49
@@ -44,7 +52,6 @@ BuildRequires:  libxml2-devel
 BuildRequires:  ncurses-devel
 BuildRequires:  openldap-devel
 BuildRequires:  pam-devel
-BuildRequires:  php-devel
 BuildRequires:  pkgconfig
 BuildRequires:  popt-devel
 BuildRequires:  python-devel >= 2.4
@@ -60,7 +67,13 @@ BuildRequires:  elinks
 BuildRequires:  xapian-bindings-python
 BuildRequires:  libxml2-python
 BuildRequires:  mariadb-devel
-%define apache_group apache
+%if %with_rh_php71
+BuildRequires:  rh-php71-php-devel
+BuildRequires:  devtoolset-6
+%else
+BuildRequires:  php-devel
+BuildRequires:  gcc-c++ >= 4.8
+%endif
 
 %description
 Kopano provides email storage on the server side and brings its own
@@ -149,8 +162,12 @@ Summary:        E-Mail Delivery Agent for the Kopano platform
 Group:          Productivity/Networking/Email/Servers
 Requires:       kopano-common
 Requires:       kopano-lang = %version
+%if %with_rh_php71
+Requires:       rh-php71
+%else
 Requires:       php
-Requires:       php-mapi
+%endif
+Requires:       %php_prefix-mapi
 
 %description dagent
 Delivers incoming e-mail from your SMTP server to stores in the
@@ -457,7 +474,7 @@ Group:          System/Libraries
 
 %description -n libkcutil0
 
-%package -n php-mapi
+%package -n %php_prefix-mapi
 Summary:        PHP bindings for MAPI
 # php-ext is the one thing that can also request the "ZCONTACTS" provider
 Group:          Development/Languages/PHP
@@ -466,7 +483,7 @@ Requires:       kopano-contacts = %version
 Obsoletes:      php5-mapi
 Provides:       php5-mapi
 
-%description -n php-mapi
+%description -n %php_prefix-mapi
 Using this module, you can create PHP programs which use MAPI calls
 to interact with Kopano.
 
@@ -511,6 +528,12 @@ Provides some files under old module names.
 %patch0 -p1
 
 %build
+
+%if %with_rh_php71
+  source /opt/rh/rh-php71/enable
+  source /opt/rh/devtoolset-6/enable
+%endif
+
 autoreconf -fi
 export CFLAGS="%optflags"
 export CXXFLAGS="$CFLAGS"
@@ -546,6 +569,17 @@ for i in kopano_backup kopano_cli kopano_migration_pst kopano_presence \
 done
 
 # distro-specifics
+%if %with_rh_php71
+  mkdir -p %{buildroot}/%{_unitdir}/kopano-dagent.service.d
+  cat > %{buildroot}/%{_unitdir}/kopano-dagent.service.d/scl.conf <<-EOF
+[Service]
+Environment=X_SCLS=rh-php71
+Environment=LD_LIBRARY_PATH=/opt/rh/rh-php71/root/usr/lib64
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/opt/rh/rh-php71/root/usr/sbin:/opt/rh/rh-php71/root/usr/bin:/usr/sbin:/usr/bin
+EOF
+  perl -i -pe 's{^#!/usr/bin/php}{#!/opt/rh/rh-php71/root/usr/bin/php}' \
+	%{buildroot}/%_bindir/kopano-mr-accept %{buildroot}/%_bindir/kopano-mr-process
+%endif
 
 # some default dirs
 mkdir -p %{buildroot}/%_defaultdocdir %{buildroot}/%{_sharedstatedir}/kopano/autorespond %{buildroot}/%{_sharedstatedir}/kopano/spamd/spam
@@ -916,6 +950,9 @@ fi
 %_sbindir/kopano-mr-accept.py
 %_sbindir/kopano-mr-process.py
 %_unitdir/kopano-dagent.service
+%if %with_rh_php71
+%_unitdir/kopano-dagent.service.d/scl.conf
+%endif
 %_datadir/kopano-dagent/
 %_mandir/man*/kopano-autorespond.*
 %_mandir/man*/kopano-mr-accept.*
@@ -1208,11 +1245,18 @@ fi
 %defattr(-,root,root)
 %_libdir/libkcutil.so.0*
 
-%files -n php-mapi
+%files -n %php_prefix-mapi
 %defattr(-,root,root)
+%if %with_rh_php71
+%dir /etc/opt/rh/rh-php71/php.d
+%dir /opt/rh/rh-php71/root/usr/lib64/php/modules
+%config(noreplace) /etc/opt/rh/rh-php71/php.d/mapi.ini
+/opt/rh/rh-php71/root/usr/lib64/php/modules/mapi*
+%else
 %dir %_sysconfdir/php.d
 %config(noreplace) %_sysconfdir/php.d/mapi.ini
 %_libdir/php/modules/mapi*
+%endif
 %dir %_datadir/kopano/
 %_datadir/kopano/php/
 
@@ -1243,6 +1287,7 @@ fi
 %changelog
 * Thu Aug 09 2018 mark.verlinde@gmail.com
 - Rebuild for centos new upstream release 8.6.6
+- Optional rh-php71 build
   * clean-up spec
 * Mon Aug 06 2018 - jengelh@inai.de
 - Update to new upstream release 8.6.6
