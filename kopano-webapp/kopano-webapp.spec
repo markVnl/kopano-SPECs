@@ -14,7 +14,7 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-%define release 0.2
+%define release 0.3
 
 %define langdir %{_datadir}/%{name}/server/language
 %define plugindir %{_datadir}/%{name}/plugins
@@ -33,11 +33,9 @@ BuildRequires:  xz
 BuildRequires:  libxml2
 
 Requires:       %{name}-lang = %{version}
-Requires:       php >= 5.3
-Requires:       php-gettext
-Requires:       php-mapi
-Requires:       php-openssl
-Requires:       php-zlib
+Requires:       rh-php71
+Requires:       rh-php71-php-common
+Requires:       php71-mapi
 
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
