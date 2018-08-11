@@ -160,10 +160,12 @@ Requires:       kopano-common
 Requires:       kopano-lang = %version
 %if %with_rh_php71
 Requires:       rh-php71
+Requires:       php71-mapi
 %else
 Requires:       php
-%endif
 Requires:       php-mapi
+%endif
+
 
 %description dagent
 Delivers incoming e-mail from your SMTP server to stores in the
@@ -470,7 +472,11 @@ Group:          System/Libraries
 
 %description -n libkcutil0
 
+%if %with_rh_php71
+%package -n php71-mapi
+%else
 %package -n php-mapi
+%endif
 Summary:        PHP bindings for MAPI
 # php-ext is the one thing that can also request the "ZCONTACTS" provider
 Group:          Development/Languages/PHP
@@ -479,7 +485,11 @@ Requires:       kopano-contacts = %version
 Obsoletes:      php5-mapi
 Provides:       php5-mapi
 
-%description -n php-mapi
+%if %with_rh_php71
+%description -n php71-mapi
+%else
+%description-n php-mapi
+%endif
 Using this module, you can create PHP programs which use MAPI calls
 to interact with Kopano.
 
@@ -1241,7 +1251,11 @@ fi
 %defattr(-,root,root)
 %_libdir/libkcutil.so.0*
 
+%if %with_rh_php71
+%files -n php71-mapi
+%else
 %files -n php-mapi
+%endif
 %defattr(-,root,root)
 %if %with_rh_php71
 %dir /etc/opt/rh/rh-php71/php.d

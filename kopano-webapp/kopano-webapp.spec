@@ -35,7 +35,7 @@ BuildRequires:  libxml2
 Requires:       %{name}-lang = %{version}
 Requires:       rh-php71
 Requires:       rh-php71-php-common
-Requires:       php-mapi
+Requires:       php71-mapi
 
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
