@@ -15,7 +15,7 @@
 # published by the Open Source Initiative.
 
 
-%define release 0.3
+%define release 0.4
 
 %define with_rh_php71 1
 
@@ -65,7 +65,7 @@ BuildRequires:  libxml2-python
 BuildRequires:  mariadb-devel
 %if %with_rh_php71
 BuildRequires:  rh-php71-php-devel
-BuildRequires:  devtoolset-6
+BuildRequires:  devtoolset-7
 %else
 BuildRequires:  php-devel
 BuildRequires:  gcc-c++ >= 4.8
@@ -527,7 +527,7 @@ Provides some files under old module names.
 
 %if %with_rh_php71
   source /opt/rh/rh-php71/enable
-  source /opt/rh/devtoolset-6/enable
+  source /opt/rh/devtoolset-7/enable
 %endif
 
 autoreconf -fi
