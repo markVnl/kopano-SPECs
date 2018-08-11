@@ -15,6 +15,9 @@
 %define release 0.10.20170103git
 %define lname	libvmime1
 
+# we need to build with devtoolset-7 too if we build kopano-core with_rh_php71 1
+%define with_rh_php71 1
+
 Name:           libvmime
 Summary:        Library for working with RFC 2822, MIME messages and IMAP/POP/SMTP
 License:        GPL-3.0-or-later
@@ -36,6 +39,9 @@ BuildRequires:  gnutls-devel
 BuildRequires:  libgsasl-devel
 BuildRequires:  pkgconfig
 BuildRequires:  xz
+%if with_rh_php71
+BuildRequires:  devtoolset-7
+%endif
 
 %description
 VMime is a C++ class library for working with RFC2822 and
@@ -77,6 +83,10 @@ This subpackage contains the headers for the library's API.
 
 %build
 
+%if %with_rh_php71
+  source /opt/rh/devtoolset-7/enable
+%endif
+
 cf="%optflags -DVMIME_ALWAYS_GENERATE_7BIT_PARAMETER=1"
 cmake . \
 	-DVMIME_SENDMAIL_PATH:STRING="%_sbindir/sendmail" \
@@ -112,6 +122,8 @@ find "$b" -type f -name "*.la" -delete
 %endif
 
 %changelog
+* Fri Aug 10 2018 mark.verlinde@gmail.com
+- Optional rh-php71 build
 * Tue Jun 1 2018 mark.verlinde@gmail.com
 -  adapt for build (centos) el7
 * Mon Apr 23 2018 jengelh@inai.de
