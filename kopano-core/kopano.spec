@@ -627,6 +627,7 @@ if [ ! -e "%_sysconfdir/kopano/dagent.cfg" -a \
      -e "%_sysconfdir/kopano/dagent.cfg.rpmsave" ]; then
 	mv -v "%_sysconfdir/kopano/dagent.cfg.rpmsave" \
 		"%_sysconfdir/kopano/dagent.cfg"
+fi
 
 %post devel -p /sbin/ldconfig
 %postun devel -p /sbin/ldconfig
