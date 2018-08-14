@@ -922,9 +922,9 @@ fi
 %_mandir/man*/kopano-mr-accept.*
 %_mandir/man*/kopano-mr-process.*
 %_mandir/man*/kopano-dagent.*
-%attr(0755,kopano,kopano) %dir %_localstatedir/lib/kopano/
-%attr(0750,kopano,kopano) %_localstatedir/lib/kopano/autorespond/
-%attr(0750,kopano,kopano) %_localstatedir/lib/kopano/dagent/
+%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/
+%attr(0750,kopano,kopano) %_sharedstatedir/kopano/autorespond/
+%attr(0750,kopano,kopano) %_sharedstatedir/kopano/dagent/
 %attr(0750,kopano,kopano) %dir %_localstatedir/log/kopano/
 %dir %_docdir/kopano
 %dir %_docdir/kopano/example-config
@@ -1031,8 +1031,8 @@ fi
 %_sbindir/kopano-search-xapian-compact.py
 %_unitdir/kopano-search.service
 %_mandir/man*/kopano-search.*
-%attr(0755,kopano,kopano) %dir %_localstatedir/lib/kopano/
-%attr(0755,kopano,kopano) %dir %_localstatedir/lib/kopano/search/
+%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/
+%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/search/
 %attr(0750,kopano,kopano) %dir %_localstatedir/log/kopano/
 %dir %_docdir/kopano
 %dir %_docdir/kopano/example-config
@@ -1064,7 +1064,7 @@ fi
 %_mandir/man*/kopano-server.*
 %_mandir/man*/kopano-ldap.cfg.*
 %_mandir/man*/kopano-unix.cfg.*
-%attr(0755,kopano,kopano) %dir %_localstatedir/lib/kopano/
+%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/
 %attr(0750,kopano,kopano) %dir %_localstatedir/log/kopano/
 %dir %_datadir/kopano
 %_datadir/kopano/ldap.active-directory.cfg
@@ -1097,8 +1097,8 @@ fi
 %defattr(-,root,root)
 %_sbindir/kopano-spamd
 %_unitdir/kopano-spamd.service
-%attr(0755,kopano,kopano) %dir %_localstatedir/lib/kopano/
-%attr(0755,kopano,kopano) %dir %_localstatedir/lib/kopano/spamd/
+%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/
+%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/spamd/
 %_mandir/man*/kopano-spamd.*
 %dir %_docdir/kopano
 %dir %_docdir/kopano/example-config
@@ -1112,8 +1112,8 @@ fi
 %_unitdir/kopano-spooler.service
 %_mandir/man*/kopano-spooler.*
 %_datadir/kopano-spooler
-%attr(0755,kopano,kopano) %dir %_localstatedir/lib/kopano/
-%attr(0750,kopano,kopano) %_localstatedir/lib/kopano/spooler/
+%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/
+%attr(0750,kopano,kopano) %_sharedstatedir/kopano/spooler/
 %attr(0750,kopano,kopano) %dir %_localstatedir/log/kopano/
 %dir %_docdir/kopano
 %dir %_docdir/kopano/example-config
