@@ -21,7 +21,7 @@ Version:        2.3.9
 Release:        %release%{?dist}
 Summary:        An implementation of Microsoft's ActiveSync protocol
 License:        AGPL-3.0
-Group:          Productivity/Networking/Email/Utilities
+Group:          Applications/Communications
 Url:            http://z-push.sourceforge.net/
 Source:         http://download.z-push.org/final/2.3/z-push-%{version}.tar.gz
 Source1:        z-push.conf

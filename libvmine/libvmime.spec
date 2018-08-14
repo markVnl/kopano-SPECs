@@ -21,7 +21,7 @@
 Name:           libvmime
 Summary:        Library for working with RFC 2822, MIME messages and IMAP/POP/SMTP
 License:        GPL-3.0-or-later
-Group:          Development/Libraries/C and C++
+Group:          System Environment/Libraries
 Version:        0.9.2
 Release:        %release%{?dist}
 Url:            http://vmime.org/
@@ -54,7 +54,7 @@ Internet. The library offers features to build a mail client.
 
 %package -n %lname
 Summary:        Library for working with MIME messages and IMAP/POP/SMTP
-Group:          System/Libraries
+Group:          System Environment/Libraries
 
 %description -n %lname
 VMime is a C++ class library for working with RFC2822 and
@@ -67,7 +67,7 @@ Internet. The library offers features to build a mail client.
 
 %package devel
 Summary:        Development files for vmime, an e-mail message library
-Group:          Development/Libraries/C and C++
+Group:          Development/Libraries
 Requires:       %lname = %version
 
 %description devel

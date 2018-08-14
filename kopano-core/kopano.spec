@@ -27,7 +27,7 @@ Version:        8.6.6
 Release:        %release%{?dist}
 Summary:        Groupware server suite
 License:        AGPL-3.0-only
-Group:          Productivity/Networking/Email/Servers
+Group:          Applications/Productivity
 Url:            https://kopano.io/
 Source:         https://github.com/Kopano-dev/kopano-core/archive/kopanocore-%{version}.tar.gz
 Patch0:         jsoncpp_0.x.y_branch.patch
@@ -82,7 +82,7 @@ resource management) can be handled by the software as well.
 
 %package archiver
 Summary:        Hierarchial Storage Management for the Kopano Core platform
-Group:          Productivity/Networking/Email/Servers
+Group:          Applications/Archiving
 Requires:       kopano-lang = %version
 
 %description archiver
@@ -96,7 +96,7 @@ secondary Kopano server directly.
 
 %package backup
 Summary:        Utility to back up and restore Kopano stores
-Group:          Productivity/Networking/Email/Servers
+Group:          Applications/System
 Requires:       kopano-common
 Requires:       python2-kopano = %version
 
@@ -107,7 +107,7 @@ respective MAPI items, and can process stores in parallel.
 
 %package bash-completion
 Summary:        bash TAB completion for Kopano Core command-line utilities
-Group:          System/Shells
+Group:          System Environment/Shells
 Requires:       bash-completion
 BuildArch:      noarch
 
@@ -117,7 +117,7 @@ feature.
 
 %package client
 Summary:        Kopano MAPI provider library
-Group:          Productivity/Networking/Email/Servers
+Group:          System Environment/Libraries
 Requires:       kopano-common = %version
 Requires:       kopano-lang = %version
 
@@ -128,7 +128,7 @@ programs.
 
 %package common
 Summary:        Shared files for Kopano Core services
-Group:          Productivity/Networking/Email/Servers
+Group:          Applications/Productivity
 Requires:       cronie
 Requires:       logrotate
 Requires(pre):  %_sbindir/groupadd
@@ -145,7 +145,7 @@ Common components for services of Kopano Core.
 
 %package contacts
 Summary:        MAPI provider adding contact folders in the addressbook
-Group:          Productivity/Networking/Email/Servers
+Group:          System Environment/Daemons
 Requires:       kopano-client = %version
 Requires:       kopano-common = %version
 
@@ -155,7 +155,7 @@ and adds the contents transparently into the MAPI addrbook.
 
 %package dagent
 Summary:        E-Mail Delivery Agent for the Kopano platform
-Group:          Productivity/Networking/Email/Servers
+Group:          System Environment/Daemons
 Requires:       kopano-common
 Requires:       kopano-lang = %version
 %if %with_rh_php71
@@ -173,7 +173,7 @@ Kopano server.
 
 %package devel
 Summary:        C++ development files for Kopano Core
-Group:          Development/Libraries/C and C++
+Group:          Development/Libraries
 Requires:       kopano-common = %version
 Requires:       libkcarchiver0 = %version-%release
 Requires:       libkcarchivercore0 = %version-%release
@@ -194,7 +194,7 @@ Development files to create programs for use with Kopano Core.
 
 %package gateway
 Summary:        POP3 and IMAP Gateway for Kopano Core
-Group:          Productivity/Networking/Email/Servers
+Group:          System Environment/Daemons
 Requires:       kopano-common
 
 %description gateway
@@ -206,7 +206,7 @@ IMAPS.
 
 %package ical
 Summary:        ICal and CalDAV Gateway for Kopano Core
-Group:          Productivity/Networking/Email/Servers
+Group:          System Environment/Daemons
 Requires:       kopano-common
 
 %description ical
@@ -216,14 +216,14 @@ configured to listen for HTTP and HTTPS requests.
 
 %package lang
 Summary:        Translations for Kopano Core components
-Group:          System/Localization
+Group:          System Environment/Base
 
 %description lang
 Provides translations to various Kopano Core subpackages.
 
 %package migration-imap
 Summary:        Utility to migrate between IMAP mailboxes
-Group:          Productivity/Networking/Email/Servers
+Group:          Applications/System
 BuildArch:      noarch
 Requires:       perl(Carp)
 Requires:       perl(Cwd)
@@ -262,7 +262,7 @@ between IMAP mailboxes (including Kopano).
 
 %package migration-pst
 Summary:        Utility to import PST files
-Group:          Productivity/Networking/Email/Servers
+Group:          Applications/System
 Requires:       kopano-common
 Requires:       python2-kopano = %version
 
@@ -274,7 +274,7 @@ should be practically no data loss, even including calendar data.
 
 %package monitor
 Summary:        Quota monitor for Kopano Core
-Group:          Productivity/Networking/Email/Servers
+Group:          System Environment/Daemons
 Requires:       kopano-common
 
 %description monitor
@@ -283,7 +283,7 @@ exceeded, an e-mail will be internally sent to this account.
 
 %package presence
 Summary:        Kopano Core Presence Daemon
-Group:          Productivity/Networking/Email/Servers
+Group:          System Environment/Daemons
 Requires:       kopano-common >= %version
 Requires:       python-flask
 Requires:       python-sleekxmpp
@@ -300,7 +300,7 @@ requests, respectively, using a simple (and identical) JSON format.
 
 %package search
 Summary:        Indexed search engine for Kopano Core
-Group:          Productivity/Networking/Email/Servers
+Group:          System Environment/Daemons
 Requires:       kopano-common
 Requires:       xapian-bindings-python
 Requires:       python2-kopano = %version
@@ -315,7 +315,7 @@ documents, enhancing the search performance of kopano-server.
 
 %package server
 Summary:        Server component for Kopano Core
-Group:          Productivity/Networking/Email/Servers
+Group:          System Environment/Daemons
 Requires:       kopano-common = %version
 # Needed for createstore scripts' functionality
 Requires:       kopano-utils
@@ -329,7 +329,7 @@ server to use for storage.
 
 %package server-packages
 Summary:        Metapackage to install the entire Kopano Core stack
-Group:          Productivity/Networking/Email/Servers
+Group:          Applications/Productivity
 Requires:       kopano-backup = %version
 Requires:       kopano-dagent = %version
 Requires:       kopano-gateway = %version
@@ -346,7 +346,7 @@ server components.
 
 %package spamd
 Summary:        ICS-driven spam learning daemon for Kopano/SpamAssasin
-Group:          Productivity/Networking/Email/Servers
+Group:          System Environment/Daemons
 
 %description spamd
 A program which can teach SpamAssassin about spam based upon
@@ -354,7 +354,7 @@ the mails a user has moved to his Kopano junk folder.
 
 %package spooler
 Summary:        E-mail Spooler for Kopano Core
-Group:          Productivity/Networking/Email/Servers
+Group:          System Environment/Daemons
 Requires:       kopano-common
 Requires:       kopano-lang = %version
 
@@ -365,7 +365,7 @@ SMTP server.
 
 %package utils
 Summary:        Admin command-line utils for Kopano Core
-Group:          Productivity/Networking/Email/Servers
+Group:          Applications/System
 Requires:       kopano-common = %version
 Requires:       python2-kopano = %version
 
@@ -374,21 +374,21 @@ Command-line clients to control and check the Kopano server.
 
 %package -n libkcfreebusy0
 Summary:        Implementation of Free/Busy time scheduling
-Group:          System/Libraries
+Group:          System Environment/Libraries
 
 %description -n libkcfreebusy0
 RFC 5545
 
 %package -n libkcicalmapi0
 Summary:        iCal interface for MAPI
-Group:          System/Libraries
+Group:          System Environment/Libraries
 
 %description -n libkcicalmapi0
 Provides an interface between iCal and MAPI.
 
 %package -n libkcinetmapi0
 Summary:        Internet e-mail interface for MAPI
-Group:          System/Libraries
+Group:          System Environment/Libraries
 
 %description -n libkcinetmapi0
 Provides an interface to convert between RFC 5322 Internet e-mail and
@@ -396,7 +396,7 @@ MAPI messages.
 
 %package -n libmapi1
 Summary:        Kopano's implementation of the Messaging API
-Group:          System/Libraries
+Group:          System Environment/Libraries
 
 %description -n libmapi1
 MAPI allows client programs to become (e-mail) messaging-enabled,
@@ -405,21 +405,21 @@ with certain messaging servers.
 
 %package -n libkcarchiver0
 Summary:        Library with shared Kopano archiver functionality
-Group:          System/Libraries
+Group:          System Environment/Libraries
 
 %description -n libkcarchiver0
 Library with shared archiver functionality for Kopano Core.
 
 %package -n libkcarchivercore0
 Summary:        Library with shared Kopano archiver functionality
-Group:          System/Libraries
+Group:          System Environment/Libraries
 
 %description -n libkcarchivercore0
 Library with shared archiver functionality for Kopano Core.
 
 %package -n libkcrosie0
 Summary:        Kopano HTML sanitizer interface
-Group:          System/Libraries
+Group:          System Environment/Libraries
 
 %description -n libkcrosie0
 This library contains the API to filter HTML mail using libtidy;
@@ -428,8 +428,7 @@ to retain.
 
 %package -n libkcserver0
 Summary:        The Kopano Server library
-Group:          System/Libraries
-
+Group:          System Environment/Libraries
 %description -n libkcserver0
 This library contains the central server code which is responsible
 for handling RPC calls from libmapi, loading/storing objects in the
@@ -437,7 +436,7 @@ database, etc.
 
 %package -n libkcsoap0
 Summary:        SOAP (de)serializer functions for Kopano's RPCs
-Group:          System/Libraries
+Group:          System Environment/Libraries
 
 %description -n libkcsoap0
 This library contains autogenerated code to (de)serialize the SOAP RPCs
@@ -450,25 +449,25 @@ side, this representation is translated back to objects again.
 
 %package -n libkcsync0
 Summary:        Routines for synchronization in Kopano Core
-Group:          System/Libraries
+Group:          System Environment/Libraries
 
 %description -n libkcsync0
 
 %package -n libkcmapi0
 Summary:        MAPI-related utility functions for Kopano Core
-Group:          System/Libraries
+Group:          System Environment/Libraries
 
 %description -n libkcmapi0
 
 %package -n libkcssl0
 Summary:        SSL-related utility functions for Kopano Core
-Group:          System/Libraries
+Group:          System Environment/Libraries
 
 %description -n libkcssl0
 
 %package -n libkcutil0
 Summary:        Miscellaneous utility functions for Kopano Core
-Group:          System/Libraries
+Group:          System Environment/Libraries
 
 %description -n libkcutil0
 
@@ -479,7 +478,7 @@ Group:          System/Libraries
 %endif
 Summary:        PHP bindings for MAPI
 # php-ext is the one thing that can also request the "ZCONTACTS" provider
-Group:          Development/Languages/PHP
+Group:          Development/Languages
 Requires:       kopano-client = %version
 Requires:       kopano-contacts = %version
 Obsoletes:      php5-mapi
@@ -495,7 +494,7 @@ to interact with Kopano.
 
 %package -n python2-kopano
 Summary:        High-level Python bindings for Kopano
-Group:          Development/Languages/Python
+Group:          Development/Languages
 Obsoletes:      python-kopano < %version-%release
 Provides:       python-kopano = %version-%release
 Requires:       python-dateutil
@@ -508,7 +507,7 @@ tasks.
 
 %package -n python2-mapi
 Summary:        Python bindings for MAPI
-Group:          Development/Languages/Python
+Group:          Development/Languages
 Requires:       kopano-client = %version
 Obsoletes:      python-mapi < %version-%release
 Provides:       python-mapi = %version-%release
@@ -552,11 +551,11 @@ pushd obj-python2
 %define _configure ../configure
 
 %configure \
-	--docdir="%_docdir/%name" \
-	--with-userscript-prefix="%_sysconfdir/kopano/userscripts" \
-	--with-quotatemplate-prefix="%_sysconfdir/kopano/quotamail" \
-	--with-php-config="php-config" --enable-release \
-	PYTHON="$(which python2)" PYTHON_CFLAGS="$PYTHON_CFLAGS" PYTHON_LIBS="$PYTHON_LIBS"
+  --docdir="%_docdir/%name" \
+  --with-userscript-prefix="%_sysconfdir/kopano/userscripts" \
+  --with-quotatemplate-prefix="%_sysconfdir/kopano/quotamail" \
+  --with-php-config="php-config" --enable-release \
+  PYTHON="$(which python2)" PYTHON_CFLAGS="$PYTHON_CFLAGS" PYTHON_LIBS="$PYTHON_LIBS"
 
 echo "%version" >version
 make V=1 %{?_smp_mflags}
@@ -571,7 +570,7 @@ rm -Rfv %{buildroot}/%_libdir/libkcpyconv.so %{buildroot}/%_libdir/libkcpydirect
 # for (centos) el7 we only build python2
 for i in kopano_backup kopano_cli kopano_migration_pst kopano_presence \
     kopano_search kopano_spamd kopano_utils; do
-	rm -Rf %{buildroot}/%python3_sitelib/$i*
+  rm -Rf %{buildroot}/%python3_sitelib/$i*
 done
 
 # distro-specifics
@@ -598,8 +597,8 @@ if [ "$1" -ne 2 ]; then exit 0; fi
 # putback previously existing cfgs after they get untracked once
 if [ ! -e "%_sysconfdir/kopano/archiver.cfg" -a \
      -e "%_sysconfdir/kopano/archiver.cfg.rpmsave" ]; then
-	mv -v "%_sysconfdir/kopano/archiver.cfg.rpmsave" \
-		"%_sysconfdir/kopano/archiver.cfg"
+  mv -v "%_sysconfdir/kopano/archiver.cfg.rpmsave" \
+    "%_sysconfdir/kopano/archiver.cfg"
 fi
 
 %post backup
@@ -610,8 +609,8 @@ if [ "$1" -ne 2 ]; then exit 0; fi
 # putback previously existing cfgs after they get untracked once
 if [ ! -e "%_sysconfdir/kopano/backup.cfg" -a \
      -e "%_sysconfdir/kopano/backup.cfg.rpmsave" ]; then
-	mv -v "%_sysconfdir/kopano/backup.cfg.rpmsave" \
-		"%_sysconfdir/kopano/backup.cfg"
+  mv -v "%_sysconfdir/kopano/backup.cfg.rpmsave" \
+    "%_sysconfdir/kopano/backup.cfg"
 fi
 
 %post   client -p /sbin/ldconfig
@@ -619,16 +618,16 @@ fi
 
 %pre common
 %_bindir/getent group kopano >/dev/null || \
-	%_sbindir/groupadd -r kopano
+  %_sbindir/groupadd -r kopano
 %_bindir/getent passwd kopano >/dev/null || \
-	%_sbindir/useradd -c "Kopano unprivileged account" \
-	-g kopano -r kopano -s /sbin/nologin
+  %_sbindir/useradd -c "Kopano unprivileged account" \
+  -g kopano -r kopano -s /sbin/nologin
 
 %post common
 chown -Rh kopano:kopano /var/log/kopano 2>/dev/null || :
 chown kopano:kopano /var/lib/kopano 2>/dev/null || :
 if [ -x /usr/bin/systemd-tmpfiles ]; then
-	/usr/bin/systemd-tmpfiles --create kopano-tmpfiles.conf || :
+  /usr/bin/systemd-tmpfiles --create kopano-tmpfiles.conf || :
 fi
 
 %triggerpostun common -- kopano-common
@@ -636,8 +635,8 @@ if [ "$1" -ne 2 ]; then exit 0; fi
 # putback previously existing cfgs after they get untracked once
 if [ ! -e "%_sysconfdir/sysconfig/kopano" -a \
      -e "%_sysconfdir/sysconfig/kopano.rpmsave" ]; then
-	mv -v "%_sysconfdir/sysconfig/kopano.rpmsave" \
-		"%_sysconfdir/sysconfig/kopano"
+  mv -v "%_sysconfdir/sysconfig/kopano.rpmsave" \
+    "%_sysconfdir/sysconfig/kopano"
 fi
 
 %post   contacts -p /sbin/ldconfig
@@ -660,13 +659,13 @@ if [ "$1" -ne 2 ]; then exit 0; fi
 # putback previously existing cfgs after they get untracked once
 if [ ! -e "%_sysconfdir/kopano/autorespond" -a \
      -e "%_sysconfdir/kopano/autorespond.rpmsave" ]; then
-	mv -v "%_sysconfdir/kopano/autorespond.rpmsave" \
-		"%_sysconfdir/kopano/autorespond"
+  mv -v "%_sysconfdir/kopano/autorespond.rpmsave" \
+    "%_sysconfdir/kopano/autorespond"
 fi
 if [ ! -e "%_sysconfdir/kopano/dagent.cfg" -a \
      -e "%_sysconfdir/kopano/dagent.cfg.rpmsave" ]; then
-	mv -v "%_sysconfdir/kopano/dagent.cfg.rpmsave" \
-		"%_sysconfdir/kopano/dagent.cfg"
+  mv -v "%_sysconfdir/kopano/dagent.cfg.rpmsave" \
+    "%_sysconfdir/kopano/dagent.cfg"
 fi
 
 %post devel -p /sbin/ldconfig
@@ -690,8 +689,8 @@ if [ "$1" -ne 2 ]; then exit 0; fi
 # putback previously existing cfgs after they get untracked once
 if [ ! -e "%_sysconfdir/kopano/gateway.cfg" -a \
      -e "%_sysconfdir/kopano/gateway.cfg.rpmsave" ]; then
-	mv -v "%_sysconfdir/kopano/gateway.cfg.rpmsave" \
-		"%_sysconfdir/kopano/gateway.cfg"
+  mv -v "%_sysconfdir/kopano/gateway.cfg.rpmsave" \
+    "%_sysconfdir/kopano/gateway.cfg"
 fi
 %pre ical
 # nothing to do?
@@ -710,8 +709,8 @@ if [ "$1" -ne 2 ]; then exit 0; fi
 # putback previously existing cfgs after they get untracked once
 if [ ! -e "%_sysconfdir/kopano/ical.cfg" -a \
      -e "%_sysconfdir/kopano/ical.cfg.rpmsave" ]; then
-	mv -v "%_sysconfdir/kopano/ical.cfg.rpmsave" \
-		"%_sysconfdir/kopano/ical.cfg"
+  mv -v "%_sysconfdir/kopano/ical.cfg.rpmsave" \
+    "%_sysconfdir/kopano/ical.cfg"
 fi
 
 %post migration-pst
@@ -722,8 +721,8 @@ if [ "$1" -ne 2 ]; then exit 0; fi
 # putback previously existing cfgs after they get untracked once
 if [ ! -e "%_sysconfdir/kopano/migration-pst.cfg" -a \
      -e "%_sysconfdir/kopano/migration-pst.cfg.rpmsave" ]; then
-	mv -v "%_sysconfdir/kopano/migration-pst.cfg.rpmsave" \
-		"%_sysconfdir/kopano/migration-pst.cfg"
+  mv -v "%_sysconfdir/kopano/migration-pst.cfg.rpmsave" \
+    "%_sysconfdir/kopano/migration-pst.cfg"
 fi
 
 %pre monitor
@@ -744,8 +743,8 @@ if [ "$1" -ne 2 ]; then exit 0; fi
 # putback previously existing cfgs after they get untracked once
 if [ ! -e "%_sysconfdir/kopano/monitor.cfg" -a \
      -e "%_sysconfdir/kopano/monitor.cfg.rpmsave" ]; then
-	mv -v "%_sysconfdir/kopano/monitor.cfg.rpmsave" \
-		"%_sysconfdir/kopano/monitor.cfg"
+  mv -v "%_sysconfdir/kopano/monitor.cfg.rpmsave" \
+    "%_sysconfdir/kopano/monitor.cfg"
 fi
 %pre presence
 # nothing to do?
@@ -765,8 +764,8 @@ if [ "$1" -ne 2 ]; then exit 0; fi
 # putback previously existing cfgs after they get untracked once
 if [ ! -e "%_sysconfdir/kopano/presence.cfg" -a \
      -e "%_sysconfdir/kopano/presence.cfg.rpmsave" ]; then
-	mv -v "%_sysconfdir/kopano/presence.cfg.rpmsave" \
-		"%_sysconfdir/kopano/presence.cfg"
+  mv -v "%_sysconfdir/kopano/presence.cfg.rpmsave" \
+    "%_sysconfdir/kopano/presence.cfg"
 fi
 %pre search
 # nothing to do?
@@ -786,8 +785,8 @@ if [ "$1" -ne 2 ]; then exit 0; fi
 # putback previously existing cfgs after they get untracked once
 if [ ! -e "%_sysconfdir/kopano/search.cfg" -a \
      -e "%_sysconfdir/kopano/search.cfg.rpmsave" ]; then
-	mv -v "%_sysconfdir/kopano/search.cfg.rpmsave" \
-		"%_sysconfdir/kopano/search.cfg"
+  mv -v "%_sysconfdir/kopano/search.cfg.rpmsave" \
+    "%_sysconfdir/kopano/search.cfg"
 fi
 %pre server
 # nothing to do?
@@ -807,24 +806,24 @@ if [ "$1" -ne 2 ]; then exit 0; fi
 # putback previously existing cfgs after they get untracked once
 if [ ! -e "%_sysconfdir/kopano/server.cfg" -a \
      -e "%_sysconfdir/kopano/server.cfg.rpmsave" ]; then
-	mv -v "%_sysconfdir/kopano/server.cfg.rpmsave" \
-		"%_sysconfdir/kopano/server.cfg"
+  mv -v "%_sysconfdir/kopano/server.cfg.rpmsave" \
+    "%_sysconfdir/kopano/server.cfg"
 fi
 if [ ! -e "%_sysconfdir/kopano/unix.cfg" -a \
      -e "%_sysconfdir/kopano/unix.cfg.rpmsave" ]; then
-	mv -v "%_sysconfdir/kopano/unix.cfg.rpmsave" \
-		"%_sysconfdir/kopano/unix.cfg"
+  mv -v "%_sysconfdir/kopano/unix.cfg.rpmsave" \
+    "%_sysconfdir/kopano/unix.cfg"
 fi
 if [ ! -e "%_sysconfdir/kopano/ldap.propmap.cfg" -a \
-	     -e "%_sysconfdir/kopano/ldap.propmap.cfg.rpmsave" ]; \
+     -e "%_sysconfdir/kopano/ldap.propmap.cfg.rpmsave" ]; \
 then
-		mv -v "%_sysconfdir/kopano/ldap.propmap.cfg.rpmsave" \
-			"%_sysconfdir/kopano/ldap.propmap.cfg"
+    mv -v "%_sysconfdir/kopano/ldap.propmap.cfg.rpmsave" \
+      "%_sysconfdir/kopano/ldap.propmap.cfg"
 elif grep -q ldap.propmap.cfg "%_sysconfdir/kopano/server.cfg"; then
-		# No private modifications. Make sure it exists,
-		# if loosely referenced.
-		ln -Tsv "%_datadir/kopano/ldap.propmap.cfg" \
-			"%_sysconfdir/kopano/ldap.propmap.cfg"
+    # No private modifications. Make sure it exists,
+    # if loosely referenced.
+    ln -Tsv "%_datadir/kopano/ldap.propmap.cfg" \
+      "%_sysconfdir/kopano/ldap.propmap.cfg"
 fi
 
 
@@ -846,8 +845,8 @@ if [ "$1" -ne 2 ]; then exit 0; fi
 # putback previously existing cfgs after they get untracked once
 if [ ! -e "%_sysconfdir/kopano/spooler.cfg" -a \
      -e "%_sysconfdir/kopano/spooler.cfg.rpmsave" ]; then
-	mv -v "%_sysconfdir/kopano/spooler.cfg.rpmsave" \
-		"%_sysconfdir/kopano/spooler.cfg"
+  mv -v "%_sysconfdir/kopano/spooler.cfg.rpmsave" \
+    "%_sysconfdir/kopano/spooler.cfg"
 fi
 %post   -n libkcfreebusy0 -p /sbin/ldconfig
 %postun -n libkcfreebusy0 -p /sbin/ldconfig
@@ -880,10 +879,10 @@ fi
 /sbin/ldconfig
 %if 0%{?_unitdir:1}
 if systemctl is-active kopano-dagent >/dev/null; then
-	systemctl try-restart kopano-dagent
+  systemctl try-restart kopano-dagent
 fi
 if systemctl is-active kopano-spooler >/dev/null; then
-	systemctl try-restart kopano-spooler
+  systemctl try-restart kopano-spooler
 fi
 %else
 %restart_on_update kopano-dagent
@@ -965,9 +964,9 @@ fi
 %_mandir/man*/kopano-mr-accept.*
 %_mandir/man*/kopano-mr-process.*
 %_mandir/man*/kopano-dagent.*
-%attr(0750,kopano,kopano) %dir %_localstatedir/lib/kopano/
-%attr(0750,kopano,kopano) %_localstatedir/lib/kopano/autorespond/
-%attr(0750,kopano,kopano) %_localstatedir/lib/kopano/dagent/
+%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/
+%attr(0750,kopano,kopano) %_sharedstatedir/kopano/autorespond/
+%attr(0750,kopano,kopano) %_sharedstatedir/kopano/dagent/
 %attr(0750,kopano,kopano) %dir %_localstatedir/log/kopano/
 %dir %_docdir/kopano
 %dir %_docdir/kopano/example-config
@@ -1074,8 +1073,8 @@ fi
 %_sbindir/kopano-search-xapian-compact.py
 %_unitdir/kopano-search.service
 %_mandir/man*/kopano-search.*
-%attr(0750,kopano,kopano) %dir %_localstatedir/lib/kopano/
-%attr(0750,kopano,kopano) %dir %_localstatedir/lib/kopano/search/
+%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/
+%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/search/
 %attr(0750,kopano,kopano) %dir %_localstatedir/log/kopano/
 %dir %_docdir/kopano
 %dir %_docdir/kopano/example-config
@@ -1107,7 +1106,7 @@ fi
 %_mandir/man*/kopano-server.*
 %_mandir/man*/kopano-ldap.cfg.*
 %_mandir/man*/kopano-unix.cfg.*
-%attr(0750,kopano,kopano) %dir %_localstatedir/lib/kopano/
+%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/
 %attr(0750,kopano,kopano) %dir %_localstatedir/log/kopano/
 %dir %_datadir/kopano
 %_datadir/kopano/ldap.active-directory.cfg
@@ -1140,8 +1139,8 @@ fi
 %defattr(-,root,root)
 %_sbindir/kopano-spamd
 %_unitdir/kopano-spamd.service
-%attr(0750,kopano,kopano) %dir %_localstatedir/lib/kopano/
-%attr(0750,kopano,kopano) %dir %_localstatedir/lib/kopano/spamd/
+%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/
+%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/spamd/
 %_mandir/man*/kopano-spamd.*
 %dir %_docdir/kopano
 %dir %_docdir/kopano/example-config
@@ -1155,8 +1154,8 @@ fi
 %_unitdir/kopano-spooler.service
 %_mandir/man*/kopano-spooler.*
 %_datadir/kopano-spooler
-%attr(0750,kopano,kopano) %dir %_localstatedir/lib/kopano/
-%attr(0750,kopano,kopano) %_localstatedir/lib/kopano/spooler/
+%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/
+%attr(0750,kopano,kopano) %_sharedstatedir/kopano/spooler/
 %attr(0750,kopano,kopano) %dir %_localstatedir/log/kopano/
 %dir %_docdir/kopano
 %dir %_docdir/kopano/example-config

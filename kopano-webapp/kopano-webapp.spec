@@ -48,14 +48,14 @@ through a modern web browser.
 %package lang
 # FIXME: consider using %%lang_package macro
 Summary:        Languages for package %{name}
-Group:          System/Localization
+Group:          System Environment/Base
 
 %description lang
 Provides translations to the package %{name}.
 
 %package contactfax
 Summary:        Contact fax plugin for kopano-webapp
-Group:          Productivity/Networking/Email/Clients
+Group:          Applications/Communications
 
 %description contactfax
 Opens a new "create mail" dialog with contact's fax number in the To:
@@ -63,7 +63,7 @@ field of the email.
 
 %package folderwidgets
 Summary:        Folder widgets plugin for kopano-webapp
-Group:          Productivity/Networking/Email/Clients
+Group:          Applications/Communications
 
 %description folderwidgets
 A collection of widgets which can show the contents of some of the
@@ -71,21 +71,21 @@ default folders for a user.
 
 %package gmaps
 Summary:        Google Maps plugin for kopano-webapp
-Group:          Productivity/Networking/Email/Clients
+Group:          Applications/Communications
 
 %description gmaps
 Shows contact address on Google Maps.
 
 %package pimfolder
 Summary:        Plugin for kopano-webapp to quickly move mail into another folder
-Group:          Productivity/Networking/Email/Clients
+Group:          Applications/Communications
 
 %description pimfolder
 Kopano PIM plugin, allows you to set-up a folder quickly moving your mail to another folder; like "Archive" in GTD
 
 %package quickitems
 Summary:        Quick Items plugin for kopano-webapp
-Group:          Productivity/Networking/Email/Clients
+Group:          Applications/Communications
 
 %description quickitems
 Special widgets for easily creating new Mails, Appointments, Contacts,
@@ -93,21 +93,21 @@ Tasks and Notes.
 
 %package titlecounter
 Summary:        Title counter plugin for kopano-webapp
-Group:          Productivity/Networking/Email/Clients
+Group:          Applications/Communications
 
 %description titlecounter
 Plugin to show number of unread messages in the window title.
 
 %package webappmanual
 Summary:        Manual plugin for kopano-webapp
-Group:          Productivity/Networking/Email/Clients
+Group:          Applications/Communications
 
 %description webappmanual
 Plugin with manual for Kopano WebApp
 
 %package zdeveloper
 Summary:        Developer plugin for kopano-webapp
-Group:          Development/Tools/Debuggers
+Group:          Development/Tools
 
 %description zdeveloper
 Shows all available insertion points on the screen.
