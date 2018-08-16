@@ -24,7 +24,7 @@ Version:        4.1
 Release:        %{release}.git%{commit_short}%{?dist}
 Summary:        C Library and tools for Amazon S3 access
 License:        LGPL-3.0+
-Group:          Development/Libraries/C and C++
+Group:          System Environment/Libraries
 Url:            https://github.com/bji/libs3
 
 Source:         https://github.com/bji/%{name}/archive/%{commit}/%{name}-%{version}-%{commit_short}.tar.gz
@@ -43,7 +43,7 @@ The libs3 project implements a C library API for Amazon S3.
 
 %package -n %lname
 Summary:        Shared library from libs3
-Group:          System/Libraries
+Group:          System Environment/Libraries
 
 %description -n %lname
 This package includes the libs3 shared object library, needed to run
@@ -52,7 +52,7 @@ utility for accessing Amazon S3.
 
 %package devel
 Summary:        Headers and documentation for libs3
-Group:          Development/Libraries/C and C++
+Group:          Development/Libraries
 Requires:       %lname = %version-%release
 
 %description devel
@@ -64,7 +64,7 @@ This library provides an API for using Amazon's S3 service.
 
 %package tools
 Summary:        Utilities for Amazon S3 service
-Group:          System/Management
+Group:          Applications/System
 
 %description tools
 A command-line frontend for Amazon S3 access.
