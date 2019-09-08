@@ -1,7 +1,7 @@
 #
 # spec file for package libvmime
 #
-# Copyright (c) 2018 SUSE LINUX GmbH, Nuernberg, Germany.
+# Copyright (c) 2019 SUSE LINUX GmbH, Nuernberg, Germany.
 #
 # All modifications and additions to the file contributed by third parties
 # remain the property of their copyright owners, unless otherwise agreed
@@ -12,26 +12,26 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-%define release 0.10.20170103git
-%define lname	libvmime1
+# we need to build with devtoolset-7 if we build kopano-core with rh_php7x
+%define         with_devtoolset_7 1
 
-# we need to build with devtoolset-7 too if we build kopano-core with_rh_php71 1
-%define with_rh_php71 1
+%define         src_version 0.9.2k2.tar.gz
+%define         lname	libvmime-kopano2
 
 Name:           libvmime
-Summary:        Library for working with RFC 2822, MIME messages and IMAP/POP/SMTP
+Summary:        Library for working with RFC 5322, MIME messages and IMAP/POP/SMTP
 License:        GPL-3.0-or-later
 Group:          System Environment/Libraries
-Version:        0.9.2
-Release:        %release%{?dist}
+Version:        0.9.2.85
+Release:        1%{?dist}
 Url:            http://vmime.org/
 
-Source:         https://github.com/kisli/vmime/archive/v%version.tar.gz
+#Source:         https://github.com/Kopano-dev/vmime/archive/v%%src_version.tar.gz
+Source:         vmime-%version.tar.xz
 Patch1:         libvmime-nodatetime.diff
-Patch2:         no-override-cflags.diff
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  ImageMagick
-BuildRequires:  cmake >= 2.8.3
+BuildRequires:  cmake3 >= 3.1
 BuildRequires:  doxygen
 BuildRequires:  gcc-c++
 BuildRequires:  inkscape
@@ -39,12 +39,12 @@ BuildRequires:  gnutls-devel
 BuildRequires:  libgsasl-devel
 BuildRequires:  pkgconfig
 BuildRequires:  xz
-%if with_rh_php71
+%if %with_devtoolset_7
 BuildRequires:  devtoolset-7
 %endif
 
 %description
-VMime is a C++ class library for working with RFC2822 and
+VMime is a C++ class library for working with RFC5322 and
 MIME-conforming messages (RFC2045–2049), as well as Internet
 messaging services like IMAP, POP or SMTP.
 
@@ -57,7 +57,7 @@ Summary:        Library for working with MIME messages and IMAP/POP/SMTP
 Group:          System Environment/Libraries
 
 %description -n %lname
-VMime is a C++ class library for working with RFC2822 and
+VMime is a C++ class library for working with RFC5322 and
 MIME-conforming messages (RFC2045–2049), as well as Internet
 messaging services like IMAP, POP or SMTP.
 
@@ -67,11 +67,11 @@ Internet. The library offers features to build a mail client.
 
 %package devel
 Summary:        Development files for vmime, an e-mail message library
-Group:          Development/Libraries
+Group:          System Environment/Libraries
 Requires:       %lname = %version
 
 %description devel
-VMime is a C++ class library for working with RFC2822 and
+VMime is a C++ class library for working with RFC5322 and
 MIME-conforming messages (RFC2045–2049), as well as Internet
 messaging services like IMAP, POP or SMTP.
 
@@ -79,30 +79,40 @@ This subpackage contains the headers for the library's API.
 
 %prep
 %setup -qn vmime-%version
-%patch -P 1 -P 2 -p1
+%patch -P 1 -p1
 
 %build
+source /opt/rh/devtoolset-7/enable
 
-%if %with_rh_php71
+%if %with_devtoolset_7
   source /opt/rh/devtoolset-7/enable
 %endif
 
 cf="%optflags -DVMIME_ALWAYS_GENERATE_7BIT_PARAMETER=1"
-cmake . \
-	-DVMIME_SENDMAIL_PATH:STRING="%_sbindir/sendmail" \
-	-DVMIME_BUILD_SAMPLES:BOOL=OFF \
-	-DVMIME_HAVE_TLS_SUPPORT:BOOL=ON \
-	-DVMIME_BUILD_STATIC_LIBRARY:BOOL=OFF \
-	-DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo" \
-	-DCMAKE_INSTALL_PREFIX:PATH="%_prefix" \
-	-DCMAKE_CXX_FLAGS:STRING="$cf -std=gnu++0x" \
-	-DCMAKE_C_FLAGS:STRING="$cf"
+cmake3 . \
+      -DCMAKE_INSTALL_PREFIX:PATH="%_prefix" \
+      -DINCLUDE_INSTALL_DIR:PATH="%_includedir" \
+      -DLIB_INSTALL_DIR:PATH="%_libdir" \
+      -DSYSCONF_INSTALL_DIR:PATH="%_sysconfdir" \
+      -DSHARE_INSTALL_PREFIX:PATH="%_datadir" \
+      -DCMAKE_INSTALL_LIBDIR:PATH="%_libdir" \
+      -DVMIME_SENDMAIL_PATH:STRING="%_sbindir/sendmail" \
+      -DVMIME_BUILD_SAMPLES:BOOL=OFF \
+      -DVMIME_HAVE_TLS_SUPPORT:BOOL=ON \
+      -DVMIME_BUILD_STATIC_LIBRARY:BOOL=OFF \
+      -DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo" \
+      -DCMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING="$cf" \
+      -DCMAKE_CXX_FLAGS:STRING=" " \
+      -DCMAKE_C_FLAGS_RELWITHDEBINFO:STRING="$cf" \
+      -DCMAKE_C_FLAGS:STRING=" "
 make %{?_smp_mflags} VERBOSE=1
 
 %install
 b="%buildroot"
 make install DESTDIR="$b"
 find "$b" -type f -name "*.la" -delete
+mkdir -p "$b/%_datadir"
+mv "$b/%_prefix/cmake" "$b/%_datadir/"
 
 %post   -n %lname -p /sbin/ldconfig
 %postun -n %lname -p /sbin/ldconfig
@@ -110,22 +120,30 @@ find "$b" -type f -name "*.la" -delete
 %files -n %lname
 %defattr(-,root,root)
 %doc COPYING
-%_libdir/%name.so.1*
+%_libdir/libvmime-kopano.so.2*
 
 %files devel
 %defattr(-,root,root)
 %_includedir/vmime
 %_libdir/libvmime.so
+%_libdir/libvmime-kopano.so
 %_libdir/pkgconfig/*.pc
-%if 0%{?with_pdf}
-%_docdir/%name
-%endif
+%_datadir/cmake/
 
 %changelog
-* Fri Aug 10 2018 mark.verlinde@gmail.com
-- Optional rh-php71 build
-* Tue Jun 1 2018 mark.verlinde@gmail.com
--  adapt for build (centos) el7
+* Fri Sep 06 2019 Mark Verlinde <mark.verlinde@gmail.com> - 0.9.2.85-1
+- adapt for (centos) el7  build
+* Tue May 28 2019 Jan Engelhardt <jengelh@inai.de>
+- Update to Kopano branch of vmime, 0.9.2k2
+  * Unbreak own hostname qualification on POSIX systems
+* Mon Jun 25 2018 jengelh@inai.de
+- Update to new git snapshot v0.9.2-50-ga9b8221
+  * Dropped support for boost::shared_ptr<>, enabled exclusive
+    C++11 use of std::shared_ptr.
+  * Handle parsing of (RFC-nonconforming) address lines containing
+    bare at signs, like "a@b.c <e@f.g>" or
+    "=?UTF-8?Q?a=c2=a0recipient_=28foo@bar.com=29?= <e@f.g>".
+  * Add SMTPS with AUTH PLAIN without SASL.
 * Mon Apr 23 2018 jengelh@inai.de
 - Add no-override-cflags.diff so that vmime becomes externally
   buildable with other -O/-g levels.
