@@ -1,51 +1,47 @@
-%global commit 08a0fd5420c25108d3bff4096a2378fd2f288a50
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
-# we do not build python3 for (centos) el7
+
 %define with_py3 0
+# we do not build python3(6) for (centos) el7
+Name:           python-sleekxmpp
+Version:        1.3.2
+Release:        5%{?dist}
+Summary:        Flexible XMPP client/component/server library for Python
 
-Name:		python-sleekxmpp
-Version:	1.2.0
-Release:	0.11.git%{shortcommit}%{?dist}
-Summary:	Flexible XMPP client/component/server library for Python
+License:        MIT
+URL:            https://github.com/fritzy/SleekXMPP
+Source0:        https://github.com/fritzy/SleekXMPP/archive/sleek-%{version}.tar.gz
+BuildArch:      noarch
 
-License:	MIT
-URL:		https://github.com/fritzy/SleekXMPP
-Source0:    https://github.com/fritzy/SleekXMPP/archive/%{commit}/SleekXMPP-%{version}-%{shortcommit}.tar.gz
-# Seems to have been fixed upstream in
-#  https://github.com/fritzy/SleekXMPP/commit/a2423b849963887415b5b86e556ccda5f9ac2913#diff-446dd43bb3cb47383b2629c457abf504
-Patch0:     python-sleekxmpp-fix-mixed-tabs-and-spaces.patch
-
-BuildArch:	    noarch
 BuildRequires:	python2-devel
+
 %if %with_py3
-BuildRequires:	python3-devel
+BuildRequires:	python36-devel
 %endif
+
 # Required for some tests in %%check.
 BuildRequires:  gnupg
 
-Requires:	    python-dns
+Requires:	python-dns
 Requires:       python-pyasn1
 Requires:       python-pyasn1-modules
 
 %description
-SleekXMPP is a flexible XMPP library for python that allows
-you to create clients, components or servers for the XMPP protocol.
-Plug-ins can be create to cover every current or future XEP.
+SleekXMPP is a flexible XMPP library for python that allows you to
+create clients, components or servers for the XMPP protocol. Plug-ins
+can be create to cover every current or future XEP.
 
 %if %with_py3
-%package -n python3-sleekxmpp
-Summary:	Flexible XMPP client/component/server library for Python
-Requires:	python3-dns
+%package -n python36-sleekxmpp
+Summary:        %{sum}
+Requires:	python36-dns
 
-%description -n python3-sleekxmpp
-SleekXMPP is a flexible XMPP library for python that allows
-you to create clients, components or servers for the XMPP protocol.
-Plug-ins can be create to cover every current or future XEP.
+%description -n python36-sleekxmpp
+SleekXMPP is a flexible XMPP library for python that allows you to
+create clients, components or servers for the XMPP protocol. Plug-ins
+can be create to cover every current or future XEP.
 %endif
 
 %prep
-%setup -q -n SleekXMPP-%{commit}
-%patch0 -p0
+%setup -q -n SleekXMPP-sleek-%{version}
 %if %with_py3
 rm -rf %{py3dir}
 cp -a . %{py3dir}
@@ -75,21 +71,45 @@ pushd %{py3dir}
 popd
 %endif
 
-%files
+%files 
 %doc LICENSE README.rst
 %{python_sitelib}/sleekxmpp/
 %{python_sitelib}/sleekxmpp-*.egg-info
 
 %if %with_py3
+%files -n python36-sleekxmpp
 %doc LICENSE README.rst
-%files -n python3-sleekxmpp
 %{python3_sitelib}/sleekxmpp/
 %{python3_sitelib}/sleekxmpp-*.egg-info
 %endif
 
 %changelog
-* Mon Jan 1 2018 mark.verlinde@gmail.com
+* Fri Sep 06 2019 Mark Verlinde <mark.verlinde@gmail.com> - 1.3.2-4
+- adapt to el7 (centos) build
 - build only python2 for (centos) el7
+
+* Fri Feb 09 2018 Iryna Shcherbina <ishcherb@redhat.com> - 1.3.2-4
+- Update Python 2 dependency declarations to new packaging standards
+  (See https://fedoraproject.org/wiki/FinalizingFedoraSwitchtoPython3)
+
+* Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.2-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
+* Thu Jul 27 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
+
+* Sat Mar 25 2017 Fabian Affolter <mail@fabian-affolter.ch> - 1.3.2-1
+- Update to latest upstream release 1.3.2 to fix CVE-2017-5591 (rhbz#1421077)
+
+* Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.3.1-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
+
+* Mon Dec 19 2016 Miro Hrončok <mhroncok@redhat.com> - 1.3.1-2
+- Rebuild for Python 3.6
+
+* Mon Nov 21 2016 Fabian Affolter <mail@fabian-affolter.ch> - 1.3.1-1
+- Update spec file
+- Update to latest upstream release 1.3.1
 
 * Tue Jul 19 2016 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.2.0-0.11.git08a0fd5
 - https://fedoraproject.org/wiki/Changes/Automatic_Provides_for_Python_RPM_Packages
