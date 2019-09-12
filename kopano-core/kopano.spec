@@ -18,8 +18,6 @@
 %define with_rh_php71 1
 
 
-%define apache_group apache
-
 Name:           kopano
 Version:        8.7.3
 Release:        0.1%{?dist}
@@ -69,7 +67,7 @@ BuildRequires:  rh-php71-php-devel
 BuildRequires:  php-devel
 %endif
 BuildRequires:  devtoolset-7
-# TODO check dep
+# TODO: check BuildRequires
 BuildRequires:  libHX-devel
 
 %description
@@ -605,12 +603,13 @@ find %{buildroot} -type f -name "*.la" -print -delete
 rm -Rfv %{buildroot}/%_libdir/libkcpyconv.so %{buildroot}/%_libdir/libkcpydirector.so %{buildroot}/%_libdir/libkcpyplug.so
 
 # for (centos) el7 we only build python2
-for i in in kopano_backup kopano_cli kopano_migration_pst kopano_presence \
+for i in kopano_backup kopano_cli kopano_migration_pst kopano_presence \
     kopano_search kopano_spamd kopano_utils; do
     rm -Rf %{buildroot}/%python3_sitelib/$i*
 done
 
 # distro-specifics
+# TODO: remove this? see %%package dagent
 %if %with_rh_php71
   mkdir -p %{buildroot}/%{_unitdir}/kopano-dagent.service.d
   cat > %{buildroot}/%{_unitdir}/kopano-dagent.service.d/scl.conf <<-EOF
