@@ -19,7 +19,7 @@
 
 
 Name:           kopano
-Version:        8.7.3
+Version:        8.7.5
 Release:        0.1%{?dist}
 Summary:        Groupware server suite
 License:        AGPL-3.0-only
