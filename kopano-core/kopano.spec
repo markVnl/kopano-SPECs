@@ -169,13 +169,15 @@ Summary:        E-Mail Delivery Agent for the Kopano platform
 Group:          System Environment/Daemons
 Requires:       kopano-common
 Requires:       kopano-lang = %version
-%if %with_rh_php71
-Requires:       rh-php71
-Requires:       php71-mapi
-%else
-Requires:       php
-Requires:       php-mapi
-%endif
+#TODO: check Requires
+#%%if %%with_rh_php71
+#Requires:       rh-php71
+#Requires:       php71-mapi
+#%%else
+#Requires:       php
+#Requires:       php-mapi
+#%%endif
+Requires:	python2-mapi
 
 %description dagent
 Delivers incoming e-mail from your SMTP server to stores in the
