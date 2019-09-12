@@ -1,7 +1,7 @@
 #
 # spec file for package kopano-webapp
 #
-# Copyright (c) 2018 Mark Verlinde
+# Copyright (c) 2019 Mark Verlinde
 # Copyright (c) 2019 SUSE LINUX GmbH, Nuernberg, Germany.
 # Copyright (c) 2016 Kopano B.V.
 #
@@ -20,7 +20,7 @@
 %define plugindir %{_datadir}/%{name}/plugins
 
 Name:           kopano-webapp
-Version:        3.5.4
+Version:        3.5.10
 Release:        0.1%{?dist}
 Summary:        Improved WebApp for Kopano
 License:        AGPL-3.0-only
