@@ -1,8 +1,8 @@
 #
 # spec file for package kopano
 #
-# Copyright (c) 2018 Mark Verlinde
-# Copyright (c) 2018 SUSE LINUX GmbH, Nuernberg, Germany.
+# Copyright (c) 2019 Mark Verlinde
+# Copyright (c) 2019 SUSE LINUX GmbH, Nuernberg, Germany.
 # Copyright (c) 2016 Kopano B.V.
 #
 # All modifications and additions to the file contributed by third parties
@@ -15,22 +15,17 @@
 # published by the Open Source Initiative.
 
 
-%define release 0.4
-
 %define with_rh_php71 1
 
 
-%define apache_group apache
-
 Name:           kopano
-Version:        8.6.6
-Release:        %release%{?dist}
+Version:        8.7.5
+Release:        0.1%{?dist}
 Summary:        Groupware server suite
 License:        AGPL-3.0-only
 Group:          Applications/Productivity
 Url:            https://kopano.io/
 Source:         https://github.com/Kopano-dev/kopano-core/archive/kopanocore-%{version}.tar.gz
-Patch0:         jsoncpp_0.x.y_branch.patch
 BuildRoot:      %{_tmppath}/kopanocore-%{version}
 BuildRequires:  gettext-devel
 BuildRequires:  gperftools-devel
@@ -43,7 +38,7 @@ BuildRequires:  libicu-devel
 BuildRequires:  libs3-devel >= 4.1
 BuildRequires:  libtool
 BuildRequires:  libuuid-devel
-BuildRequires:  libvmime-devel >= 0.9.2
+BuildRequires:  libvmime-devel >= 0.9.2.85
 BuildRequires:  libxml2-devel
 BuildRequires:  ncurses-devel
 BuildRequires:  openldap-devel
@@ -57,7 +52,10 @@ BuildRequires:  swig
 BuildRequires:  xz
 BuildRequires:  zlib-devel
 BuildRequires:  pkgconfig(jsoncpp) >= 0.10.5
+BuildRequires:  pkgconfig(libHX) >= 1.10
 BuildRequires:  pkgconfig(libcrypto)
+BuildRequires:  pkgconfig(libmicrohttpd)
+BuildRequires:  pkgconfig(librrd)
 BuildRequires:  pkgconfig(libssl)
 BuildRequires:  elinks
 BuildRequires:  xapian-bindings-python
@@ -65,11 +63,12 @@ BuildRequires:  libxml2-python
 BuildRequires:  mariadb-devel
 %if %with_rh_php71
 BuildRequires:  rh-php71-php-devel
-BuildRequires:  devtoolset-7
 %else
 BuildRequires:  php-devel
-BuildRequires:  gcc-c++ >= 4.8
 %endif
+BuildRequires:  devtoolset-7
+# TODO: check BuildRequires
+BuildRequires:  libHX-devel
 
 %description
 Kopano provides email storage on the server side and brings its own
@@ -135,13 +134,23 @@ Requires(pre):  %_sbindir/groupadd
 Requires(pre):  %_sbindir/useradd
 %if 0%{?distro_without_intelligent_package_manager}
 Obsoletes:      libkchl0
+Obsoletes:      libkcmapi0
 Obsoletes:      libkcservice0
 Obsoletes:      libkcsoapclient0
 Obsoletes:      libkcsoapserver0
+Obsoletes:      libkcssl0
+Obsoletes:      libkcsync0
 %endif
+Obsoletes:      kopano-core-common
+Provides:       kopano-core-common
 
 %description common
-Common components for services of Kopano Core.
+This package contains a basic set of files for distro integration:
+* Definition for system user and group "kopano"
+Kopano Groupware Core:
+* GWC front manpage, Release Notes
+* Logrotate definitions for GWC daemons
+* Apparmor definitions for GWC daemons
 
 %package contacts
 Summary:        MAPI provider adding contact folders in the addressbook
@@ -158,14 +167,15 @@ Summary:        E-Mail Delivery Agent for the Kopano platform
 Group:          System Environment/Daemons
 Requires:       kopano-common
 Requires:       kopano-lang = %version
-%if %with_rh_php71
-Requires:       rh-php71
-Requires:       php71-mapi
-%else
-Requires:       php
-Requires:       php-mapi
-%endif
-
+#TODO: check Requires
+#%%if %%with_rh_php71
+#Requires:       rh-php71
+#Requires:       php71-mapi
+#%%else
+#Requires:       php
+#Requires:       php-mapi
+#%%endif
+Requires:	python2-mapi
 
 %description dagent
 Delivers incoming e-mail from your SMTP server to stores in the
@@ -180,12 +190,9 @@ Requires:       libkcarchivercore0 = %version-%release
 Requires:       libkcfreebusy0 = %version-%release
 Requires:       libkcicalmapi0 = %version-%release
 Requires:       libkcinetmapi0 = %version-%release
-Requires:       libkcmapi0 = %version-%release
 Requires:       libkcrosie0 = %version-%release
 Requires:       libkcserver0 = %version-%release
 Requires:       libkcsoap0 = %version-%release
-Requires:       libkcssl0 = %version-%release
-Requires:       libkcsync0 = %version-%release
 Requires:       libkcutil0 = %version-%release
 Requires:       libmapi1 = %version-%release
 
@@ -266,7 +273,6 @@ Group:          Applications/System
 Requires:       kopano-common
 Requires:       python2-kopano = %version
 
-
 %description migration-pst
 kopano-migration-pst is a utility to import PST files into Kopano. As PST
 files are basically MAPI dumps, and Kopano also uses MAPI internally, there
@@ -298,6 +304,14 @@ update presence information (for example, make a user 'available' on
 Spreed). Queries and updates are performed with simple GET and PUT
 requests, respectively, using a simple (and identical) JSON format.
 
+%package python-utils
+Summary:        Additional Python-based command-line utils for Kopano Core
+Group:          System Environment/Daemons
+Requires:       python2-kopano = %version
+
+%description python-utils
+Command-line clients to manipulate mailboxes (stores) in various ways.
+
 %package search
 Summary:        Indexed search engine for Kopano Core
 Group:          System Environment/Daemons
@@ -305,6 +319,7 @@ Requires:       kopano-common
 Requires:       xapian-bindings-python
 Requires:       python2-kopano = %version
 Requires:       elinks
+Requires:       poppler-utils
 Requires:       xapian-core
 
 %description search
@@ -335,6 +350,7 @@ Requires:       kopano-dagent = %version
 Requires:       kopano-gateway = %version
 Requires:       kopano-ical = %version
 Requires:       kopano-monitor = %version
+Requires:       kopano-python-utils = %version
 Requires:       kopano-search = %version
 Requires:       kopano-server = %version
 Requires:       kopano-spooler = %version
@@ -347,6 +363,7 @@ server components.
 %package spamd
 Summary:        ICS-driven spam learning daemon for Kopano/SpamAssasin
 Group:          System Environment/Daemons
+Requires:       python2-kopano = %version
 
 %description spamd
 A program which can teach SpamAssassin about spam based upon
@@ -357,20 +374,47 @@ Summary:        E-mail Spooler for Kopano Core
 Group:          System Environment/Daemons
 Requires:       kopano-common
 Requires:       kopano-lang = %version
+# kcpyplug is dlopened
+Requires:       libkcpyplug0 = %version
+#TODO check Requires
+Requires:       python2-mapi
+
 
 %description spooler
 The outgoing e-mail spooler. This service makes sure that e-mails
 sent by clients are converted to Internet e-mail and forwarded to an
 SMTP server.
 
+%package statsd
+Summary:        Statistics aggregator for Kopano Core services
+Group:          System Environment/Daemons
+
+%description statsd
+kopano-statsd is a daemon with a HTTP endpoint that can receive
+statistics submissions from kopano-dagent, kopano-spooler and
+kopano-server and stores them in a round-robin database from which
+graphs can be created at a later time with rrdgraph(1).
+
 %package utils
 Summary:        Admin command-line utils for Kopano Core
 Group:          Applications/System
-Requires:       kopano-common = %version
-Requires:       python2-kopano = %version
 
 %description utils
 Command-line clients to control and check the Kopano server.
+
+%package -n libkcarchiver0
+Summary:        Library with shared Kopano archiver functionality
+Group:          System Environment/Libraries
+
+%description -n libkcarchiver0
+Library with shared archiver functionality for Kopano Core.
+
+%package -n libkcarchivercore0
+Summary:        Library with shared Kopano archiver functionality
+Group:          System Environment/Libraries
+
+%description -n libkcarchivercore0
+Library with shared archiver functionality for Kopano Core.
 
 %package -n libkcfreebusy0
 Summary:        Implementation of Free/Busy time scheduling
@@ -394,28 +438,17 @@ Group:          System Environment/Libraries
 Provides an interface to convert between RFC 5322 Internet e-mail and
 MAPI messages.
 
-%package -n libmapi1
-Summary:        Kopano's implementation of the Messaging API
+%package -n libkcpyplug0
+Summary:        Python interpreter plugin for dagent/spooler
 Group:          System Environment/Libraries
+Obsoletes:      libkcpyplug < %version-%release
+Provides:       libkcpyplug = %version-%release
 
-%description -n libmapi1
-MAPI allows client programs to become (e-mail) messaging-enabled,
--aware, or -based by calling MAPI subsystem routines that interface
-with certain messaging servers.
-
-%package -n libkcarchiver0
-Summary:        Library with shared Kopano archiver functionality
-Group:          System Environment/Libraries
-
-%description -n libkcarchiver0
-Library with shared archiver functionality for Kopano Core.
-
-%package -n libkcarchivercore0
-Summary:        Library with shared Kopano archiver functionality
-Group:          System Environment/Libraries
-
-%description -n libkcarchivercore0
-Library with shared archiver functionality for Kopano Core.
+%description -n libkcpyplug0
+This plugin enables the use of the Python interpreter from within
+dagent/spooler. It is controlled via the "plugin_enable" directive in
+the dagent/spooler config file. Multithreading will be turned OFF
+when using this plugin.
 
 %package -n libkcrosie0
 Summary:        Kopano HTML sanitizer interface
@@ -429,6 +462,7 @@ to retain.
 %package -n libkcserver0
 Summary:        The Kopano Server library
 Group:          System Environment/Libraries
+
 %description -n libkcserver0
 This library contains the central server code which is responsible
 for handling RPC calls from libmapi, loading/storing objects in the
@@ -447,29 +481,21 @@ translates its arguments (C++ objects in our case) into a
 representation that can be sent over the network. On the receiving
 side, this representation is translated back to objects again.
 
-%package -n libkcsync0
-Summary:        Routines for synchronization in Kopano Core
-Group:          System Environment/Libraries
-
-%description -n libkcsync0
-
-%package -n libkcmapi0
-Summary:        MAPI-related utility functions for Kopano Core
-Group:          System Environment/Libraries
-
-%description -n libkcmapi0
-
-%package -n libkcssl0
-Summary:        SSL-related utility functions for Kopano Core
-Group:          System Environment/Libraries
-
-%description -n libkcssl0
-
 %package -n libkcutil0
 Summary:        Miscellaneous utility functions for Kopano Core
 Group:          System Environment/Libraries
 
 %description -n libkcutil0
+A lot of utility functions used from all over Kopano Core.
+
+%package -n libmapi1
+Summary:        Kopano's implementation of the Messaging API
+Group:          System Environment/Libraries
+
+%description -n libmapi1
+MAPI allows client programs to become (e-mail) messaging-enabled,
+-aware, or -based by calling MAPI subsystem routines that interface
+with certain messaging servers.
 
 %if %with_rh_php71
 %package -n php71-mapi
@@ -487,7 +513,7 @@ Provides:       php5-mapi
 %if %with_rh_php71
 %description -n php71-mapi
 %else
-%description-n php-mapi
+%description -n php-mapi
 %endif
 Using this module, you can create PHP programs which use MAPI calls
 to interact with Kopano.
@@ -498,6 +524,7 @@ Group:          Development/Languages
 Obsoletes:      python-kopano < %version-%release
 Provides:       python-kopano = %version-%release
 Requires:       python-dateutil
+Requires:       python-pytz
 Requires:       python2-mapi
 
 %description -n python2-kopano
@@ -522,7 +549,7 @@ interact with Kopano.
 %package -n python2-zarafa
 Summary:        Old module name support for Kopano
 Group:          Development/Languages
-Obsoletes:      kopano-compat
+Obsoletes:      kopano-compat < %version-%release
 Provides:       kopano-compat = %version-%release
 
 %description -n python2-zarafa
@@ -530,13 +557,12 @@ Provides some files under old module names.
 
 %prep
 %setup -qn kopano-core-kopanocore-%{version}
-%patch0 -p1
 
 %build
 
+source /opt/rh/devtoolset-7/enable
 %if %with_rh_php71
   source /opt/rh/rh-php71/enable
-  source /opt/rh/devtoolset-7/enable
 %endif
 
 autoreconf -fi
@@ -563,17 +589,27 @@ popd
 
 %install
 %make_install -C obj-python2/
+
+rm -Rf %{buildroot}/%_prefix/lib/kopano/kopano-mfr.py \
+       %{buildroot}/%_unitdir/kopano-grapi.service \
+       %{buildroot}/%_sbindir/kopano-grapi \
+       %{buildroot}/%_docdir/kopano/example-config/grapi.cfg \
+       %{buildroot}/%python3_sitelib/kopano_rest*
+
+cp -a RELNOTES.txt %{buildroot}/%_docdir/kopano/
 find %{buildroot} -type f -name "*.la" -print -delete
-# no headers for these two
-rm -Rfv %{buildroot}/%_libdir/libkcpyconv.so %{buildroot}/%_libdir/libkcpydirector.so
+
+# dlopened or no headers
+rm -Rfv %{buildroot}/%_libdir/libkcpyconv.so %{buildroot}/%_libdir/libkcpydirector.so %{buildroot}/%_libdir/libkcpyplug.so
 
 # for (centos) el7 we only build python2
 for i in kopano_backup kopano_cli kopano_migration_pst kopano_presence \
     kopano_search kopano_spamd kopano_utils; do
-  rm -Rf %{buildroot}/%python3_sitelib/$i*
+    rm -Rf %{buildroot}/%python3_sitelib/$i*
 done
 
 # distro-specifics
+# TODO: remove this? see %%package dagent
 %if %with_rh_php71
   mkdir -p %{buildroot}/%{_unitdir}/kopano-dagent.service.d
   cat > %{buildroot}/%{_unitdir}/kopano-dagent.service.d/scl.conf <<-EOF
@@ -582,8 +618,6 @@ Environment=X_SCLS=rh-php71
 Environment=LD_LIBRARY_PATH=/opt/rh/rh-php71/root/usr/lib64
 Environment=PATH=/usr/local/sbin:/usr/local/bin:/opt/rh/rh-php71/root/usr/sbin:/opt/rh/rh-php71/root/usr/bin:/usr/sbin:/usr/bin
 EOF
-  perl -i -pe 's{^#!/usr/bin/php}{#!/opt/rh/rh-php71/root/usr/bin/php}' \
-	%{buildroot}/%_bindir/kopano-mr-accept %{buildroot}/%_bindir/kopano-mr-process
 %endif
 
 # some default dirs
@@ -654,6 +688,7 @@ chown -Rh kopano:kopano /var/log/kopano 2>/dev/null || :
 
 %postun dagent
 %systemd_postun_with_restart kopano-dagent.service
+
 %triggerpostun dagent -- kopano-dagent
 if [ "$1" -ne 2 ]; then exit 0; fi
 # putback previously existing cfgs after they get untracked once
@@ -712,6 +747,7 @@ if [ ! -e "%_sysconfdir/kopano/ical.cfg" -a \
   mv -v "%_sysconfdir/kopano/ical.cfg.rpmsave" \
     "%_sysconfdir/kopano/ical.cfg"
 fi
+%systemd_postun_with_restart kopano-ical.service
 
 %post migration-pst
 chown -Rh kopano:kopano /var/log/kopano 2>/dev/null || :
@@ -746,6 +782,8 @@ if [ ! -e "%_sysconfdir/kopano/monitor.cfg" -a \
   mv -v "%_sysconfdir/kopano/monitor.cfg.rpmsave" \
     "%_sysconfdir/kopano/monitor.cfg"
 fi
+%systemd_postun_with_restart kopano-monitor.service
+
 %pre presence
 # nothing to do?
 
@@ -767,6 +805,8 @@ if [ ! -e "%_sysconfdir/kopano/presence.cfg" -a \
   mv -v "%_sysconfdir/kopano/presence.cfg.rpmsave" \
     "%_sysconfdir/kopano/presence.cfg"
 fi
+%systemd_postun_with_restart kopano-presence.service
+
 %pre search
 # nothing to do?
 
@@ -788,6 +828,8 @@ if [ ! -e "%_sysconfdir/kopano/search.cfg" -a \
   mv -v "%_sysconfdir/kopano/search.cfg.rpmsave" \
     "%_sysconfdir/kopano/search.cfg"
 fi
+%systemd_postun_with_restart kopano-search.service
+
 %pre server
 # nothing to do?
 
@@ -825,6 +867,21 @@ elif grep -q ldap.propmap.cfg "%_sysconfdir/kopano/server.cfg"; then
     ln -Tsv "%_datadir/kopano/ldap.propmap.cfg" \
       "%_sysconfdir/kopano/ldap.propmap.cfg"
 fi
+%systemd_postun_with_restart kopano-server.service
+
+%pre spamd
+# nothing to do?
+
+%post spamd
+chown -Rh kopano:kopano /var/log/kopano 2>/dev/null || :
+chown kopano:kopano /var/lib/kopano/spamd 2>/dev/null || :
+%systemd_post kopano-spamd.service
+
+%preun spamd
+%systemd_preun kopano-spamd.service
+
+%postun spamd
+%systemd_postun_with_restart kopano-spamd.service
 
 
 %pre spooler
@@ -848,32 +905,43 @@ if [ ! -e "%_sysconfdir/kopano/spooler.cfg" -a \
   mv -v "%_sysconfdir/kopano/spooler.cfg.rpmsave" \
     "%_sysconfdir/kopano/spooler.cfg"
 fi
+%systemd_postun_with_restart kopano-spooler.service
+
+%pre statsd
+# nothing to do?
+
+%post statsd
+chown -Rh kopano:kopano /var/log/kopano 2>/dev/null || :
+%systemd_post kopano-statsd.service
+
+%preun statsd
+%systemd_preun kopano-statsd.service
+
+%postun statsd
+%systemd_postun_with_restart kopano-statsd.service
+
+%post   -n libkcarchiver0 -p /sbin/ldconfig
+%postun -n libkcarchiver0 -p /sbin/ldconfig
+%post   -n libkcarchivercore0 -p /sbin/ldconfig
+%postun -n libkcarchivercore0 -p /sbin/ldconfig
 %post   -n libkcfreebusy0 -p /sbin/ldconfig
 %postun -n libkcfreebusy0 -p /sbin/ldconfig
 %post   -n libkcicalmapi0 -p /sbin/ldconfig
 %postun -n libkcicalmapi0 -p /sbin/ldconfig
 %post   -n libkcinetmapi0 -p /sbin/ldconfig
 %postun -n libkcinetmapi0 -p /sbin/ldconfig
-%post   -n libmapi1 -p /sbin/ldconfig
-%postun -n libmapi1 -p /sbin/ldconfig
-%post   -n libkcarchiver0 -p /sbin/ldconfig
-%postun -n libkcarchiver0 -p /sbin/ldconfig
-%post   -n libkcarchivercore0 -p /sbin/ldconfig
-%postun -n libkcarchivercore0 -p /sbin/ldconfig
+%post   -n libkcpyplug0 -p /sbin/ldconfig
+%postun -n libkcpyplug0 -p /sbin/ldconfig
 %post   -n libkcrosie0 -p /sbin/ldconfig
 %postun -n libkcrosie0 -p /sbin/ldconfig
 %post   -n libkcserver0 -p /sbin/ldconfig
 %postun -n libkcserver0 -p /sbin/ldconfig
 %post   -n libkcsoap0 -p /sbin/ldconfig
 %postun -n libkcsoap0 -p /sbin/ldconfig
-%post   -n libkcsync0 -p /sbin/ldconfig
-%postun -n libkcsync0 -p /sbin/ldconfig
-%post   -n libkcmapi0 -p /sbin/ldconfig
-%postun -n libkcmapi0 -p /sbin/ldconfig
-%post   -n libkcssl0 -p /sbin/ldconfig
-%postun -n libkcssl0 -p /sbin/ldconfig
 %post   -n libkcutil0 -p /sbin/ldconfig
 %postun -n libkcutil0 -p /sbin/ldconfig
+%post   -n libmapi1 -p /sbin/ldconfig
+%postun -n libmapi1 -p /sbin/ldconfig
 
 %post -n python2-mapi 
 /sbin/ldconfig
@@ -912,8 +980,7 @@ fi
 
 %files bash-completion
 %defattr(-,root,root)
-%dir %_sysconfdir/bash_completion.d
-%config %_sysconfdir/bash_completion.d/kopano-bash-completion.sh
+%_datadir/bash-completion/
 
 %files client -f kopano.lang
 %defattr(-,root,root)
@@ -933,10 +1000,14 @@ fi
 %_mandir/man5/kopano-coredump.5*
 %_mandir/man7/kopano.7*
 %_mandir/man7/mapi.7*
+%attr(0755,kopano,kopano) %dir %_localstatedir/lib/kopano
+%attr(0750,kopano,kopano) %dir %_localstatedir/lib/kopano/empty
 %attr(0750,kopano,kopano) %dir %_localstatedir/log/kopano/
 %dir %_docdir/kopano
+%_docdir/kopano/RELNOTES.txt
 %dir %_docdir/kopano/example-config
-%_docdir/kopano/example-config/sysconfig.txt
+%dir %_docdir/kopano/example-config/apparmor.d/
+%_docdir/kopano/example-config/apparmor.d/*.aa
 
 %files contacts
 %defattr(-,root,root)
@@ -953,8 +1024,6 @@ fi
 %_sbindir/kopano-dagent
 %_sbindir/kopano-mr-accept
 %_sbindir/kopano-mr-process
-%_sbindir/kopano-mr-accept.py
-%_sbindir/kopano-mr-process.py
 %_unitdir/kopano-dagent.service
 %if %with_rh_php71
 %_unitdir/kopano-dagent.service.d/scl.conf
@@ -965,8 +1034,8 @@ fi
 %_mandir/man*/kopano-mr-process.*
 %_mandir/man*/kopano-dagent.*
 %attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/
-%attr(0750,kopano,kopano) %_sharedstatedir/kopano/autorespond/
-%attr(0750,kopano,kopano) %_sharedstatedir/kopano/dagent/
+%attr(0755,kopano,kopano) %_sharedstatedir/kopano/autorespond/
+%attr(0755,kopano,kopano) %_sharedstatedir/kopano/dagent/
 %attr(0750,kopano,kopano) %dir %_localstatedir/log/kopano/
 %dir %_docdir/kopano
 %dir %_docdir/kopano/example-config
@@ -990,9 +1059,6 @@ fi
 %_libdir/libkcrosie.so
 %_libdir/libkcserver.so
 %_libdir/libkcsoap.so
-%_libdir/libkcsync.so
-%_libdir/libkcmapi.so
-%_libdir/libkcssl.so
 %_libdir/libkcutil.so
 %_libdir/pkgconfig/*
 %_datadir/gdb/
@@ -1060,6 +1126,23 @@ fi
 %_docdir/kopano/example-config/presence.cfg
 %python_sitelib/kopano_presence/
 %python_sitelib/kopano_presence-*.egg-info
+%files python-utils
+%defattr(-,root,root)
+%_bindir/kopano-set-oof
+%_sbindir/kopano-cachestat
+%_sbindir/kopano-cli
+%_sbindir/kopano-fix-ipm-subtree
+%_sbindir/kopano-localize-folders
+%_sbindir/kopano-mailbox-permissions
+%_sbindir/kopano-recreate-systemfolders
+%_sbindir/kopano-rules
+%_sbindir/kopano-search-upgrade-findroots.py
+%_mandir/man*/kopano-cachestat.*
+%_mandir/man*/kopano-cli.*
+%_mandir/man*/kopano-mailbox-permissions.*
+%_mandir/man*/kopano-set-oof.*
+%python_sitelib/kopano_cli/
+%python_sitelib/kopano_cli*.egg-info
 
 %files search
 %defattr(-,root,root)
@@ -1086,19 +1169,10 @@ fi
 
 %files server
 %defattr(-,root,root)
-%dir %_sysconfdir/kopano
-%dir %_sysconfdir/kopano/userscripts
-%dir %_sysconfdir/kopano/userscripts/createcompany.d
-%dir %_sysconfdir/kopano/userscripts/creategroup.d
-%dir %_sysconfdir/kopano/userscripts/createuser.d
-%_sysconfdir/kopano/userscripts/*.sh
-%_sysconfdir/kopano/userscripts/create*/*
-%_sysconfdir/kopano/userscripts/createcompany
-%_sysconfdir/kopano/userscripts/creategroup
-%_sysconfdir/kopano/userscripts/createuser
-%_sysconfdir/kopano/userscripts/deletecompany
-%_sysconfdir/kopano/userscripts/deletegroup
-%_sysconfdir/kopano/userscripts/deleteuser
+# TODO is this the right location?
+%dir %_prefix/lib/kopano/
+%_prefix/lib/kopano/userscripts/
+# %%dir %%_sysconfdir/kopano
 %_sbindir/kopano-server
 %dir %_libdir/kopano
 %_libdir/kopano/libkcserver-[a-z]*.so
@@ -1131,9 +1205,7 @@ fi
 %_docdir/kopano/example-config/apparmor.d/usr.sbin.kopano-server
 
 %files server-packages
-%defattr(-,root,root)
-# We want it to be rather empty; but rpmlint does not like it empty.
-%dir %_docdir/kopano
+
 
 %files spamd
 %defattr(-,root,root)
@@ -1155,49 +1227,56 @@ fi
 %_mandir/man*/kopano-spooler.*
 %_datadir/kopano-spooler
 %attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/
-%attr(0750,kopano,kopano) %_sharedstatedir/kopano/spooler/
+%attr(0755,kopano,kopano) %_sharedstatedir/kopano/spooler/
 %attr(0750,kopano,kopano) %dir %_localstatedir/log/kopano/
 %dir %_docdir/kopano
 %dir %_docdir/kopano/example-config
 %_docdir/kopano/example-config/spooler.cfg
 
+%files statsd
+%_unitdir/kopano-statsd.service
+%dir %_libexecdir/kopano/
+%_libexecdir/kopano/kopano-statsd
+%_mandir/man*/kopano-statsd.*
+%dir %_docdir/kopano
+%dir %_docdir/kopano/example-config
+%_docdir/kopano/example-config/statsd.cfg
+
 %files utils
 %defattr(-,root,root)
 %_bindir/kopano-fsck
+%_bindir/kopano-ibrule
 %_bindir/kopano-oof
 %_bindir/kopano-passwd
-%_bindir/kopano-set-oof
 %_bindir/kopano-stats
 %_sbindir/kopano-admin
-%_sbindir/kopano-cachestat
-%_sbindir/kopano-cli
 %_sbindir/kopano-dbadm
-%_sbindir/kopano-fix-ipm-subtree
-%_sbindir/kopano-localize-folders
-%_sbindir/kopano-mailbox-permissions
-%_sbindir/kopano-recreate-systemfolders
-%_sbindir/kopano-rules
-%_sbindir/kopano-search-upgrade-findroots.py
 %_sbindir/kopano-srvadm
 %_sbindir/kopano-storeadm
 %_mandir/man*/kopano-admin.*
-%_mandir/man*/kopano-cachestat.*
 %exclude %_mandir/man*/kopano-cfgchecker.*
-%_mandir/man*/kopano-cli.*
 %_mandir/man*/kopano-dbadm.*
 %_mandir/man*/kopano-fsck.*
-%_mandir/man*/kopano-mailbox-permissions.*
+%_mandir/man*/kopano-ibrule.*
 %_mandir/man*/kopano-oof.*
 %_mandir/man*/kopano-passwd.*
-%_mandir/man*/kopano-set-oof.*
 %_mandir/man*/kopano-srvadm.*
 %_mandir/man*/kopano-stats.*
 %_mandir/man*/kopano-storeadm.*
 %dir %_libexecdir/kopano
 %_libexecdir/kopano/mapitime
 %_libexecdir/kopano/kscriptrun
-%python_sitelib/kopano_cli/
-%python_sitelib/kopano_cli*.egg-info
+%dir %_docdir/kopano
+%dir %_docdir/kopano/example-config
+%_docdir/kopano/example-config/admin.cfg
+
+%files -n libkcarchiver0
+%defattr(-,root,root)
+%_libdir/libkcarchiver.so.0*
+
+%files -n libkcarchivercore0
+%defattr(-,root,root)
+%_libdir/libkcarchivercore.so.0*
 
 %files -n libkcfreebusy0
 %defattr(-,root,root)
@@ -1211,17 +1290,9 @@ fi
 %defattr(-,root,root)
 %_libdir/libkcinetmapi.so.0*
 
-%files -n libmapi1
+%files -n libkcpyplug0
 %defattr(-,root,root)
-%_libdir/libmapi.so.1*
-
-%files -n libkcarchiver0
-%defattr(-,root,root)
-%_libdir/libkcarchiver.so.0*
-
-%files -n libkcarchivercore0
-%defattr(-,root,root)
-%_libdir/libkcarchivercore.so.0*
+%_libdir/libkcpyplug.so.0*
 
 %files -n libkcrosie0
 %defattr(-,root,root)
@@ -1235,21 +1306,13 @@ fi
 %defattr(-,root,root)
 %_libdir/libkcsoap.so.0*
 
-%files -n libkcsync0
-%defattr(-,root,root)
-%_libdir/libkcsync.so.0*
-
-%files -n libkcmapi0
-%defattr(-,root,root)
-%_libdir/libkcmapi.so.0*
-
-%files -n libkcssl0
-%defattr(-,root,root)
-%_libdir/libkcssl.so.0*
-
 %files -n libkcutil0
 %defattr(-,root,root)
 %_libdir/libkcutil.so.0*
+
+%files -n libmapi1
+%defattr(-,root,root)
+%_libdir/libmapi.so.1*
 
 %if %with_rh_php71
 %files -n php71-mapi
@@ -1295,6 +1358,103 @@ fi
 %python_sitelib/zarafa-*.egg-info
 
 %changelog
+* Tue May 28 2019 Jan Engelhardt <jengelh@inai.de>
+- Update to new upstream release 8.7.3
+  * Fixes:
+  * dagent: standard casing for RFC 5322 headers [KF-2100]
+  * daemons: do not fail startup on IPv4-only systems [KC-1400]
+  * Feed HTML through libtidy before using it for the to-plaintext
+    conversion stage [KS-40722]
+  * server: fix crash on shutdown [KF-2179]
+  * server: address a potential crash due to type mismatch [KF-2151]
+  * server: use utf8mb3 with mysql 5.1 [KC-1423]
+  * server: avoid entering truncated tproperties data into the
+    cache [KC-1417]
+  * server: avoid using OpenLDAP-specific filters that 389-ds
+    does not know about [KC-1402]
+  * server: fixed TLS negotiation errors with openSSL 1.1.1 [KC-1439]
+  * spooler: avoid unnecessary QP encoding in header fields [KC-1430]
+  * spooler: fix hang on process termination [KC-1449]
+  * srvadm: do not complain about default_store_locale [KC-1416]
+  * dbadm: some long-running statements can now be run in parallel
+    with the new -j option [KS-42617]
+  * pyko: expand stubbed messages when dumping [KC-1159,KC-1168]
+  * pyko: don't mix str/int busy statuses [KC-1433]
+  * oof: fix erroneous -u parsing [KC-1425]
+  * oof: make --message option set the right property [KC-1435]
+  * server: complete utf8mb4->utf8 fallback for RHEL6 [KC-1423]
+  * inetmapi: modified appointments need to produce a new
+    Message-ID [KC-1458]
+  * dagent: set Bcc/RecipMe flags appropriately [KC-319]
+  * inetmapi: restore FQDN in Message-IDs [KC-1393]
+  * inetmapi: parse fake "From:" header better to hinder
+    proliferation of impersonations [KC-1350]
+  * stats: print "PR_..." instead of proptag numbers [KC-1495]
+  * server: no more unbounded thread number increase [KC-1446]
+  * php: fix crash in zif_mapi_getprops [KC-1507]
+  * Enhancements:
+  * backup: do record outofoffice settings
+  * php-ext: performance measurement log now contains a
+    timestamp, thread identifier, and global monotonic counter.
+    This can be used for estimating the achieved command rate.
+* Tue Mar 12 2019 Jan Engelhardt <jengelh@inai.de>
+- Update to 8.7.0 stable git HEAD
+  * dagent: standard casing for RFC 5322 headers [KF-2100]
+  * daemons: do not fail startup on IPv4-only systems [KC-1400]
+  * Feed HTML through libtidy before using it for the to-plaintext
+    conversion stage [KS-40722]
+  * server: fix crash on shutdown [KF-2179]
+  * server: address a potential crash due to type
+    mismatch [KF-2151]
+  * server: use utf8mb3 with mysql 5.1 [KC-1423]
+  * srvadm: do not complain about default_store_locale [KC-1416]
+  * dbadm: some long-running statements can now be run in parallel
+    with the new -j option [KS-42617]
+  * pyko: expand stubbed messages when dumping [KC-1159,KC-1168]
+* Mon Feb  4 2019 Jan Engelhardt <jengelh@inai.de>
+- Update to 8.7.0 stable
+  * server: fix disappearing inbox rules [KC-1359]
+  * kopano-dbadm: new action "usmp" and "usmp-charset"
+  * server: no more automatic upgrade to utf8mb4,
+    use `kopano-dbadm usmp` instead [KF-1394]
+  * dagent: the spam_header_name was not matched
+    correctly [KF-1961]
+  * dagent/client/libserver: fix inadvertent AF_LOCAL->SSL
+    redirect [KC-1368]
+  * client: ABEIDs were parsed wrong (and it broke with
+    gcc8) [KC-1386]
+  * php7-ext: cease modifying potentially-immutable
+    PHP variables [KC-1355]
+* Sun Oct 21 2018 Jan Engelhardt <jengelh@inai.de>
+- Update to 8.7~beta release (8.6.90)
+  * dagent, gateway, ical: modern socket specification in .cfg
+    with lmtp_listen=, pop3_listen=, imap_listen=, ical_listen=,
+    etc.
+  * dagent: PF_LOCAL socket support for communicating with postfix
+  * dagent: limited support for RFC 6531 (SMTPUTF8)
+  * server: LDAP STARTTLS support for user backend
+  * spooler: new config value log_raw_message=error
+  * daemons: coredumps no longer rely on fs.suid_dumpable
+  * server: support for Unicode supplemental plane (Emojis)
+  * spooler: add copy_delegate_mails=move-to-rep config directive
+  * kopano-ibrule: new utility for MAPI rules
+  * server: experimental "files_v2" attachment storage
+  * kopano-statsd: new daemon that records dagent/server/spooler
+    statistics
+  * This is an abridged list; there are more changes to
+    configuration and behavior; see RELNOTES.txt in the
+    "kopano-common" package for more details.
+* Sun Aug 26 2018 jengelh@inai.de
+- Update to new snapshot 8.6.7.2
+  * Fixes:
+  * gateway, spooler: (re-)activate RFC 2047 header generation
+    (Outlook is still unable to read the RFC 2231 headers that
+    are generated normally) [KC-1226]
+  * srvadm: make --purge-softdelete=0 work
+  * Enhancements:
+  * dagent: advertise 8BITMIME/RFC6152 support [KS-41452]
+  * dagent/client: fixed broken umlauts in PR_EC_BODY_FILTERED
+    when input was not UTF-8 [KC-1225]
 * Thu Aug 09 2018 mark.verlinde@gmail.com
 - Rebuild for centos new upstream release 8.6.6
 - Optional rh-php71 build
@@ -1307,6 +1467,17 @@ fi
   * gateway: avoid uncaught exception when client disconnects midway
   * dagent: avoid always running into K-2383
   * server: avoid SSL crash near ERR_clear_error on shutdown
+ * Tue Jul  3 2018 jengelh@inai.de
+- Update to new upstream snapshot 8.6.2.25
+  * Fixes:
+  * ical: handle double quotes in Content-Type header
+  * Enhancements:
+  * client: now emits warnings about own incomplete PR_RULES_DATA
+    processing
+  * inetmapi: now emits a warning when runtime vmime is too old
+  * server: fewer stat calls to the attachment backend
+  * Changes:
+  * dagent: default for log_timestamp changed to "yes" 
 * Tue Jun 12 2018 mark.verlinde@gmail.com
 - Update to new upstream release 8.6.2
   * Sanitize spec for (centos) el7 build 
