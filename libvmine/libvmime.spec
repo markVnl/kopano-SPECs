@@ -40,7 +40,7 @@ BuildRequires:  libgsasl-devel
 BuildRequires:  pkgconfig
 BuildRequires:  xz
 %if %with_devtoolset_7
-BuildRequires:  devtoolset-7
+BuildRequires:  devtoolset-7-gcc
 %endif
 
 %description
