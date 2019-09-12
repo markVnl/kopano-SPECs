@@ -33,11 +33,9 @@ BuildRequires:  xz
 BuildRequires:  libxml2
 
 Requires:       %{name}-lang = %{version}
-Requires:       php >= 5.3
-Requires:       php-gettext
-Requires:       php-mapi
-Requires:       php-openssl
-Requires:       php-zlib
+Requires:       rh-php71
+Requires:       rh-php71-php-common
+Requires:       php71-mapi
 
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build

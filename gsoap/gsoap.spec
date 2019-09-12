@@ -1,7 +1,8 @@
+
 Summary: Generator Tools for Coding SOAP/XML Web Services in C and C++
-Name: gsoap
-Version: 2.8.60
-Release: 3%{?dist}
+Name:    gsoap
+Version: 2.8.91
+Release: 1%{?dist}
 
 # gsoap is licensed both under the gSOAP public license and under GPL version
 # 2 or later with an OpenSSL linking exception.
@@ -21,15 +22,17 @@ URL: http://gsoap2.sourceforge.net/
 Source0: http://downloads.sourceforge.net/gsoap2/%{name}_%{version}.zip
 Source1: soapcpp2.1
 Source2: wsdl2h.1
+# Replace top level index.html in the doc package with a version without
+# external image, js and css references to https://www.genivia.com/
+Source3: index.html
 # Create shared libraries
 Patch0: %{name}-libtool.patch
-# Missing include of <signal.h> in gsoap/samples/testmsgr/testmsgr.cpp
-# https://sourceforge.net/p/gsoap2/bugs/1183/
-Patch1: %{name}-header.patch
-# Restore broken -c and -s modes in wsdl2h
-# https://sourceforge.net/p/gsoap2/bugs/1191/
-Patch2: %{name}-size-aname.patch
+# The custom tabs css does not work with newer doxygen - use default version
+Patch1: %{name}-doxygen-tabs.patch
+# Typo in documentation
+Patch2: %{name}-doc-typo.patch
 
+BuildRequires: gcc-c++
 BuildRequires: flex
 BuildRequires: bison
 BuildRequires: dos2unix
@@ -38,9 +41,8 @@ BuildRequires: zlib-devel
 BuildRequires: autoconf
 BuildRequires: automake
 BuildRequires: libtool
-
-Requires: openssl
-Obsoletes: %{name}-examples < 2.8.3
+BuildRequires: doxygen
+BuildRequires: graphviz
 
 %description
 The gSOAP Web services development toolkit offers an XML to C/C++
@@ -75,32 +77,54 @@ find gsoap/samples/autotest/databinding/examples -name '*.xml' \
 # Documentation fonts non-executable
 chmod a-x gsoap/doc/fonts/*
 
-# we want all txt files to have unix end-of-line encoding
+# We want all txt files to have unix end-of-line encoding
 dos2unix -k README.txt LICENSE.txt NOTES.txt GPLv2_license.txt
 
-# remove stuff with gsoap license only - not GPL
+# Remove stuff with gsoap license only - not GPL
 rm -rf gsoap/extras gsoap/mod_gsoap gsoap/Symbian
 sed 's!$(top_srcdir)/gsoap/extras/\*!!' -i gsoap/Makefile.am
+rm -rf gsoap/doc/apache gsoap/doc/wininet gsoap/doc/isapi
 
-# remove pre-compiled binaries
+# Remove pre-compiled binaries
 rm -rf gsoap/bin
 rm gsoap/samples/calc_vs2005/calc_vs2005/soapcpp2.exe
 rm gsoap/samples/rest/person
+rm gsoap/samples/wcf/Basic/TransportSecurity/calculator
 rm gsoap/VisualStudio2005/wsdl2h/wsdl2h/soapcpp2.exe
-( cd gsoap/samples/link++ ; make distclean )
-( cd gsoap/samples/wcf/Basic/TransportSecurity ; make distclean )
+
+# Remove pre-generated files
+rm gsoap/samples/webserver/opt{C.c,H.h,Stub.h}
+
+# Remove .DS_Store files
+find . -name .DS_Store -exec rm {} ';'
 
 %build
-# patches change autoconf and automake files, so we must reconfigure
+# Patches change autoconf and automake files, so we must reconfigure
 autoreconf --install --force
 
-# the libraries deliberately leave some symbols undefined
-LDFLAGS=$(sed 's!-Wl,-z,defs!!' <<< "%{__global_ldflags}")
 %configure --disable-static --prefix=/usr --enable-ipv6 --enable-samples
 
-# dependencies are not declared properly
+# Dependencies are not declared properly
 #make %{?_smp_mflags}
 make
+
+# Regenerete doxygen documentation
+cp -pr gsoap/doc gsoap/doc-build
+pushd gsoap/doc-build
+rm -rf */html
+for f in */Doxyfile ; do
+  ( cd $(dirname $f) ; doxygen Doxyfile )
+done
+rm README.txt index.html
+rm doxygen_footer.html doxygen_header.html
+rm guide/index.md guide/stdsoap2.h soapdoc2.html
+rm GeniviaLogo2_trans_noslogan.png
+rm genivia_content.css genivia_tabs.css
+rm */Doxyfile
+# rm */html/genivia_tabs.css
+rm -f */doxygen_sqlite3.db
+popd
+install -m 644 -p %{SOURCE3} gsoap/doc-build
 
 %install
 make install DESTDIR=%{buildroot}
@@ -113,7 +137,7 @@ install -m 644 -p %{SOURCE1} %{SOURCE2} %{buildroot}/%_mandir/man1
 make check
 
 %files
-%doc README.txt NOTES.txt
+%doc factsheet.pdf NOTES.txt README.txt
 %license LICENSE.txt GPLv2_license.txt
 %_libdir/libgsoap-*.so
 %_libdir/libgsoap++-*.so
@@ -338,16 +362,43 @@ make check
 # Additions in 2.8.48-1
 %_datadir/gsoap/plugin/curlapi.c
 %_datadir/gsoap/plugin/curlapi.h
+# Additions in 2.8.75-1
+%_datadir/gsoap/import/wst2.h
+%_datadir/gsoap/import/wstx2.h
+%_datadir/gsoap/plugin/httppipe.c
+%_datadir/gsoap/plugin/httppipe.h
 
 %files doc
-%doc README.txt NOTES.txt gsoap/doc/[^R]*
+%doc gsoap/doc-build/*
 %license LICENSE.txt GPLv2_license.txt
 
-%post -p /sbin/ldconfig
-
-%postun -p /sbin/ldconfig
-
 %changelog
+* Fri Sep 06 2019 Mark Verlinde <mark.verlinde@gmail.com> - 2.8.91-2
+- Rebuild for el7
+- spec line 123 "rm */html/genivia_tabs.css" broke (re)build
+
+* Fri Aug 16 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.8.91-1
+- Update to gsoap 2.8.91
+- Drop patch gsoap-samples-xml-rpc-json-pthread.patch (fixed upstream)
+
+* Thu Jul 25 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.8.75-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
+* Fri Feb 01 2019 Fedora Release Engineering <releng@fedoraproject.org> - 2.8.75-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
+* Fri Jan 18 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.8.75-1
+- Update to gsoap 2.8.75
+- Drop patches gsoap-advisory-cookies-abort.patch, gsoap-header.patch and
+  gsoap-size-aname.patch
+
+* Fri Jan 18 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.8.60-5
+- Apply fix for advisory regarding abort with cookies enabled
+- Adjust gsoap-size-aname.patch to correspond to upstream's fix
+
+* Fri Jul 13 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.8.60-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 2.8.60-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
