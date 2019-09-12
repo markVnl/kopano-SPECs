@@ -14,7 +14,7 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-%define with_rh_php71 0
+%define with_rh_php71 1
 
 %define langdir %{_datadir}/%{name}/server/language
 %define plugindir %{_datadir}/%{name}/plugins
@@ -27,6 +27,11 @@ License:        AGPL-3.0-only
 Url:            https://kopano.io
 Source:         https://github.com/Kopano-dev/kopano-webapp/archive/v%{version}.tar.gz
 
+%if %with_rh_php71
+# Configure apache to use rh-php7x fpm by default
+Patch1:		rh-php7x-php-fpm-httpd-conf.patch
+%endif
+
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 
@@ -38,6 +43,7 @@ Requires:       %{name}-lang = %{version}
 %if %with_rh_php71
 Requires:       php71-mapi
 Requires:       rh-php71
+Requires:       rh-php71-php-fpm
 %else
 Requires:       php-mapi
 Requires:       php >= 5.3
@@ -126,7 +132,7 @@ Group:          Development/Tools
 Shows all available insertion points on the screen.
 
 %prep
-%setup -q
+%autosetup -p1
 find . -type f "(" -name "*.js" -o -name "*.php" ")" \
   -exec chmod a-x "{}" "+";
 echo "%{version}" > version

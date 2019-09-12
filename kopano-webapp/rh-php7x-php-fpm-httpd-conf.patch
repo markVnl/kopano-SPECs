@@ -1,0 +1,29 @@
+From 154ce33ce93de50e00d4c10ab24151aec32cdeb0 Mon Sep 17 00:00:00 2001
+From: Mark Verlinde <mark@havak.nl>
+Date: Thu, 12 Sep 2019 17:12:12 +0200
+Subject: [PATCH 1/1] rh-php7x-php-fpm configuration
+
+Signed-off-by: Mark Verlinde <mark@havak.nl>
+---
+ kopano-webapp.conf | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/kopano-webapp.conf b/kopano-webapp.conf
+index adcb9556..b13de500 100644
+--- a/kopano-webapp.conf
++++ b/kopano-webapp.conf
+@@ -11,6 +11,11 @@ Alias /webapp /usr/share/kopano-webapp
+     DirectoryIndex index.php
+     Options -Indexes +FollowSymLinks
+ 
++    # rh-php7x-php-fpm configuration
++    <FilesMatch \.php$>
++        SetHandler "proxy:fcgi://127.0.0.1:9000"
++    </FilesMatch>
++
+     <IfModule apparmor_module>
+       AAHatName kopano-webapp
+     </IfModule>
+-- 
+2.16.5
+
