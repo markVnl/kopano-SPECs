@@ -4,7 +4,7 @@
 
 Name:          xapian-bindings
 Version:       1.4.9
-Release:       1%{?dist}
+Release:       1.1%{?dist}
 Summary:       Bindings for the Xapian Probabilistic Information Retrieval Library
 
 License:       GPLv2+
@@ -12,12 +12,13 @@ URL:           http://www.xapian.org/
 Source0:       http://www.oligarchy.co.uk/xapian/%{version}/%{name}-%{version}.tar.xz
 
 %define with_py2 1
-
-# Only build py3 support on Fedora
-%if 0%{?fedora}
 %define with_py3 1
+
+# Ruby on el7 is too old 
+%if 0%{?fedora}
+%define with_ruby 1
 %else
-%define with_py3 0
+%define with_ruby 0
 %endif
 
 BuildRequires: gcc gcc-c++
@@ -28,7 +29,9 @@ BuildRequires: python2-devel python2-setuptools python2-sphinx
 %if 0%{?with_py3}
 BuildRequires: python3-devel python3-setuptools python3-sphinx
 %endif
+%if 0%{?with_ruby}
 BuildRequires: ruby ruby-devel rubygems rubygem-rdoc rubygem-json
+%endif
 BuildRequires: tcl-devel
 BuildRequires: xapian-core-devel
 BuildRequires: zlib-devel
@@ -74,6 +77,7 @@ indexing and search facilities to applications. This package provides the
 bindings needed for developing Python3 scripts which use Xapian.
 %endif
 
+%if 0%{?with_ruby}
 %package ruby
 Summary:       Files needed for developing Ruby scripts which use Xapian
 Requires:      %{name} = %{version}-%{release}
@@ -84,6 +88,7 @@ Xapian is an Open Source Probabilistic Information Retrieval framework. It
 offers a highly adaptable toolkit that allows developers to easily add advanced
 indexing and search facilities to applications. This package provides the
 files needed for developing Ruby scripts which use Xapian
+%endif
 
 %package -n tcl-xapian
 Summary:       Files needed for developing TCL scripts which use Xapian
@@ -112,7 +117,11 @@ export RUBY_LIB_ARCH=%{ruby_vendorarchdir}
 %if 0%{?with_py3}
        %{?with_py3:--with-python3} \
 %endif
-       --with-ruby --with-tcl
+%if 0%{?with_ruby}
+       --with-ruby 
+%endif
+       --with-tcl
+
 
 make %{?_smp_mflags} V=1
 
@@ -140,14 +149,20 @@ rm -rf %{buildroot}%{_datadir}/doc/%{name}
 %{python3_sitelib}/xapian/
 %endif
 
+%if 0%{?with_ruby}
 %files ruby
 %{ruby_vendorarchdir}/_xapian.so
 %{ruby_vendorlibdir}/xapian.rb
+%endif
 
 %files -n tcl-xapian
 %{_libdir}/tcl%{tcl_version}/xapian%{version}/
 
 %changelog
+* Tue Oct 01 2019 Mark Verlinde <mark.verlinde@gmail.com> 1.4.9-1.1
+- rebuild for el7 incuding python3
+- drop ruby support: ruby 2.0.0. is to old
+
 * Mon Nov 19 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.4.9-1
 - Update to 1.4.9
 
