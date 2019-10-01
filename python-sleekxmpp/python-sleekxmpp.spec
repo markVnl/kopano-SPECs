@@ -1,9 +1,8 @@
+%global srcname sleekxmpp
 
-%define with_py3 0
-# we do not build python3(6) for (centos) el7
-Name:           python-sleekxmpp
+Name:           python-%{srcname}
 Version:        1.3.2
-Release:        5%{?dist}
+Release:        4.1%{?dist}
 Summary:        Flexible XMPP client/component/server library for Python
 
 License:        MIT
@@ -12,81 +11,71 @@ Source0:        https://github.com/fritzy/SleekXMPP/archive/sleek-%{version}.tar
 BuildArch:      noarch
 
 BuildRequires:	python2-devel
-
-%if %with_py3
-BuildRequires:	python36-devel
-%endif
-
+BuildRequires:	python3-devel
 # Required for some tests in %%check.
 BuildRequires:  gnupg
-
-Requires:	python-dns
-Requires:       python-pyasn1
-Requires:       python-pyasn1-modules
 
 %description
 SleekXMPP is a flexible XMPP library for python that allows you to
 create clients, components or servers for the XMPP protocol. Plug-ins
 can be create to cover every current or future XEP.
 
-%if %with_py3
-%package -n python36-sleekxmpp
-Summary:        %{sum}
-Requires:	python36-dns
+%package -n python2-%{srcname}
+Summary:        %{summary}
+Requires:	python2-dns
+Requires:       python2-pyasn1
+Requires:       python2-pyasn1-modules
+%{?python_provide:%python_provide python2-%{srcname}}
 
-%description -n python36-sleekxmpp
+%description -n python2-%{srcname}
 SleekXMPP is a flexible XMPP library for python that allows you to
 create clients, components or servers for the XMPP protocol. Plug-ins
 can be create to cover every current or future XEP.
+
+%package -n python3-%{srcname}
+Summary:        %{sum}
+%if 0%{?rhel} == 7
+Requires:	python36-dns
+%else 
+Requires:	python3-dns
 %endif
+%{?python_provide:%python_provide python3-%{srcname}}
+
+%description -n python3-%{srcname}
+SleekXMPP is a flexible XMPP library for python that allows you to
+create clients, components or servers for the XMPP protocol. Plug-ins
+can be create to cover every current or future XEP.
 
 %prep
 %setup -q -n SleekXMPP-sleek-%{version}
-%if %with_py3
-rm -rf %{py3dir}
-cp -a . %{py3dir}
-%endif
 
 %build
-%{__python} setup.py build
-%if %with_py3
-pushd %{py3dir}
-%{__python3} setup.py build
-popd
-%endif
+%py2_build
+%py3_build
 
 %install
-%{__python} setup.py install -O1 --skip-build --root %{buildroot}
-%if %with_py3
-pushd %{py3dir}
-%{__python3} setup.py install -O1 --skip-build --root %{buildroot}
-popd
-%endif
+%py2_install
+%py3_install
 
 %check
-%{__python} testall.py
-%if %with_py3
-pushd %{py3dir}
+%{__python2} testall.py
 %{__python3} testall.py
-popd
-%endif
 
-%files 
-%doc LICENSE README.rst
-%{python_sitelib}/sleekxmpp/
+%files -n python2-%{srcname}
+%doc README.rst
+%license LICENSE
+%{python_sitelib}/%{srcname}/
 %{python_sitelib}/sleekxmpp-*.egg-info
 
-%if %with_py3
-%files -n python36-sleekxmpp
-%doc LICENSE README.rst
-%{python3_sitelib}/sleekxmpp/
+%files -n python3-%{srcname}
+%doc README.rst
+%license LICENSE
+%{python3_sitelib}/%{srcname}/
 %{python3_sitelib}/sleekxmpp-*.egg-info
-%endif
 
 %changelog
-* Fri Sep 06 2019 Mark Verlinde <mark.verlinde@gmail.com> - 1.3.2-4
-- adapt to el7 (centos) build
-- build only python2 for (centos) el7
+* Fri Sep 06 2019 Mark Verlinde <mark.verlinde@gmail.com> - 1.3.2-4.1
+- adapt to el7 (centos) build: python36-dns lives in epel
 
 * Fri Feb 09 2018 Iryna Shcherbina <ishcherb@redhat.com> - 1.3.2-4
 - Update Python 2 dependency declarations to new packaging standards
