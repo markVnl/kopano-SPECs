@@ -14,23 +14,19 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-%define with_rh_php71 1
-
 %define langdir %{_datadir}/%{name}/server/language
 %define plugindir %{_datadir}/%{name}/plugins
 
 Name:           kopano-webapp
 Version:        3.5.10
-Release:        0.1%{?dist}
+Release:        0.2%{?dist}
 Summary:        Improved WebApp for Kopano
 License:        AGPL-3.0-only
 Url:            https://kopano.io
 Source:         https://github.com/Kopano-dev/kopano-webapp/archive/v%{version}.tar.gz
 
-%if %with_rh_php71
 # Configure apache to use rh-php7x fpm by default
-Patch1:		rh-php7x-php-fpm-httpd-conf.patch
-%endif
+Patch1:         rh-php7x-php-fpm-httpd-conf.patch
 
 BuildArch:      noarch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
@@ -40,24 +36,15 @@ BuildRequires:  xz
 BuildRequires:  libxml2
 
 Requires:       %{name}-lang = %{version}
-%if %with_rh_php71
-Requires:       php71-mapi
-Requires:       rh-php71
-Requires:       rh-php71-php-fpm
-%else
-Requires:       php-mapi
-Requires:       php >= 5.3
-%endif
+
+Requires:       php72-mapi
+Requires:       rh-php72
+Requires:       rh-php72-php-fpm
+
 # On el7 (centos) these 3 are provided by (rh-php7x-)php-common; a dependency of (rh-php7x-)php
-#%%if %%with_rh_php71
-#Requires:       rh-php71-php-gettext
-#Requires:       rh-php71-php-openssl
-#Requires:       rh-php71-php-zlib
-#%%else
-#Requires:       php-gettext
-#Requires:       php-openssl
-#Requires:       php-zlib
-#%%endif
+#Requires:       rh-php72-php-gettext
+#Requires:       rh-php72-php-openssl
+#Requires:       rh-php72-php-zlib
 
 %description
 Provides a web-client written in PHP that makes use of Jason and ExtJS
@@ -253,6 +240,57 @@ mkdir -p "%{buildroot}%{_localstatedir}/lib/%{name}/tmp"
 %{plugindir}/zdeveloper
 
 %changelog
+* Tue Oct 01 2019 mark Verlinde <mark.verlinde@gmail.com>
+- rh-php72-php-fpm is a default requirment now
+- Update to 3.5.10
+  - Bug   
+  * KW-3016 Arrow keys does not work as expected with Firefox on Ubuntu
+  * KW-3110 Default folder is not selected in rules select folder dialog
+  * KW-3111 After adding a flag plain text is visible in search preview
+  * KW-3196 Umlauts missing for certain emails when reply/forward in plain text editor
+  * KW-3100 Webapp with oidc runs in quirks mode
+  * KW-3184 Remove dependency on php-gettext
+  * KW-3189 Category button is not shown while hovering row
+  * KW-3154 Sort by flag does not function
+  * KW-189  Subject column takes too much width in task list print
+  * KW-2907 [json themes] action colors are not updated
+  * KW-3129 German umlauts disappear until webserver is restarted
+  * KW-3096 Item without a pr_record_key has an “untitled” attachment name
+  * KW-346  Remove icons from “show details” dialog in scheduling
+  * KW-515  Shared inbox folder jumps position in favorites when marking mail read/unread
+  * KW-2228 Shared contact folder is not translated to german
+  * KW-3105 Add font-size to .x-fieldset for files account creation
+  - Improvement   
+  * KW-313  Ability to select other users mailbox when settings Out of Office
+  * KW-3041 Copy all email addresses from to/cc/bcc field
+  * KW-731  Concatenate extjs stylesheets
+  * KW-2311 Change fallback timezone to europe/amsterdam
+  * KW-3039 Add option to always cc specific address
+  * KW-254  Create a rule for items with an at least or at most size
+  * KW-1405 Refactor calendar canvas implementation
+  * KW-2822 Support for rules exceptions
+  * KW-3173 Avoid to show “show all folders” panel in navigation panel forcefully
+  * KW-840  Create rule for “name in bcc box”
+  * KW-2507 Update link to powerpaste configuration
+  * KW-2818 Calendar: add day of week next to date
+  * KW-3122 Allow plugins can set the notifiers
+  * KW-3123 Use custom shadow store to record component plugin
+  * KW-3147 Create print overview for calendar grid (list view)
+  * KW-3148 Allow plugins to add ipf notification module name
+  * KW-3157 Add colored border to indicate unread items
+  * KW-571  Add “create folder” option in rules’ select folder dialogue
+  * KW-1265 Create a rule-action for “mark mail as read”
+  * KW-2836 Add support for rule: “includes these words in the recipient address”
+  * KW-2982 Redesign x-window dialogs
+  * KW-2025 Add ‘remove from to-do list’ button to context menu
+  * KW-2388 Add padding above buttons in rule creation dialog
+  * KW-2422 Don’t show the “update rules for” feature when the list contains one user
+  * KW-2877 Add oidc support to webapp
+  * KW-2941 Send icon missing in send later dialog
+  * KW-3081 Context menu handler changes in zarafa.js
+  * KW-3083 Create insertion point in rules settings
+  * KW-3085 Unpin favorites from top in “create new folder” dialog
+
 * Sat Apr 13 2019 bosim@opensuse.org
 - Update to 3.5.4
   * KW-18 Download all as zip skips files with same name
