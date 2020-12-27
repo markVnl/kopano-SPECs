@@ -1,0 +1,35 @@
+Index: sleekxmpp-1.3.3/examples/rpc_async.py
+===================================================================
+--- sleekxmpp-1.3.3/examples/rpc_async.py
++++ sleekxmpp-1.3.3/examples/rpc_async.py	2019-01-10 21:51:44.133354605 +0100
+@@ -34,7 +34,7 @@
+ 
+     callback = Future()
+ 
+-    boomerang.async(callback).throw()
++    boomerang.asynchronous(callback).throw()
+ 
+     time.sleep(10)
+ 
+Index: sleekxmpp-1.3.3/sleekxmpp/plugins/xep_0009/remote.py
+===================================================================
+--- sleekxmpp-1.3.3/sleekxmpp/plugins/xep_0009/remote.py
++++ sleekxmpp-1.3.3/sleekxmpp/plugins/xep_0009/remote.py	2019-01-10 21:51:08.073270501 +0100
+@@ -412,7 +412,7 @@
+         self._callback = callback
+ 
+     def __getattribute__(self, name, *args):
+-        if name in ('__dict__', '_endpoint', 'async', '_callback'):
++        if name in ('__dict__', '_endpoint', 'asynchronous', '_callback'):
+             return object.__getattribute__(self, name)
+         else:
+             attribute = self._endpoint.__getattribute__(name)
+@@ -427,7 +427,7 @@
+                     pass   # If the attribute doesn't exist, don't care!
+             return attribute
+ 
+-    def async(self, callback):
++    def asynchronous(self, callback):
+         return Proxy(self._endpoint, callback)
+ 
+     def get_endpoint(self):
