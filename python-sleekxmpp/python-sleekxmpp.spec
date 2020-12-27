@@ -3,7 +3,7 @@
 Summary:	SleekXMPP is an elegant Python library for XMPP (aka Jabber, Google Talk, etc)
 Name:		python-%tarname
 Version:	1.3.3
-Release:	%mkrel 6
+Release:	6.1%{?dist}
 License:	MIT
 Group:		Development/Python
 Url:		https://pypi.org/project/sleekxmpp/
@@ -38,7 +38,7 @@ find . -name '*.pyo' -o -name '*.pyc' -delete
 %py3_build
 
 export PYTHONPATH=$(pwd)
-%make_build -C docs html
+%make_build SPHINXBUILD=sphinx-build-3 -C docs html
 %__rm -rf docs/_build/html/.buildinfo
 
 %install
@@ -50,6 +50,9 @@ export PYTHONPATH=$(pwd)
 
 
 %changelog
+* Sun Dec 27 2020 Mark Verlinde <mark.verlinde@gmail.com> - 1.3.3-6.1
+- Adapt to / Rebuild for el7 
+
 * Sun Feb 16 2020 umeabot <umeabot> 1.3.3-6.mga8
 + Revision: 1532475
 - Mageia 8 Mass Rebuild
