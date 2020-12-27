@@ -1,15 +1,5 @@
-%{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib(1))")}
 %{!?tcl_version: %global tcl_version %(echo 'puts $tcl_version' | tclsh)}
 %{!?tcl_sitearch: %global tcl_sitearch %{_libdir}/tcl%{tcl_version}}
-
-Name:          xapian-bindings
-Version:       1.4.9
-Release:       1.1%{?dist}
-Summary:       Bindings for the Xapian Probabilistic Information Retrieval Library
-
-License:       GPLv2+
-URL:           http://www.xapian.org/
-Source0:       http://www.oligarchy.co.uk/xapian/%{version}/%{name}-%{version}.tar.xz
 
 %define with_py2 1
 %define with_py3 1
@@ -21,7 +11,16 @@ Source0:       http://www.oligarchy.co.uk/xapian/%{version}/%{name}-%{version}.t
 %define with_ruby 0
 %endif
 
-BuildRequires: gcc gcc-c++
+Name:          xapian-bindings
+Version:       1.4.17
+Release:       1%{?dist}
+Summary:       Bindings for the Xapian Probabilistic Information Retrieval Library
+
+License:       GPLv2+
+URL:           http://www.xapian.org/
+Source0:       http://www.oligarchy.co.uk/xapian/%{version}/%{name}-%{version}.tar.xz
+
+BuildRequires: gcc-c++
 BuildRequires: libuuid-devel
 %if 0%{?with_py2}
 BuildRequires: python2-devel python2-setuptools python2-sphinx
@@ -101,7 +100,7 @@ indexing and search facilities to applications. This package provides the
 files needed for developing TCL scripts which use Xapian
 
 %prep
-%setup -q
+%autosetup -p1
 
 %build
 %if 0%{?with_py3}
@@ -122,11 +121,10 @@ export RUBY_LIB_ARCH=%{ruby_vendorarchdir}
 %endif
        --with-tcl
 
-
-make %{?_smp_mflags} V=1
+%{make_build}
 
 %install
-make install DESTDIR=%{buildroot} INSTALL='install -p'
+%{make_install}
 
 # Remove the dev docs, we pick them up below
 rm -rf %{buildroot}%{_datadir}/doc/%{name}
@@ -159,9 +157,60 @@ rm -rf %{buildroot}%{_datadir}/doc/%{name}
 %{_libdir}/tcl%{tcl_version}/xapian%{version}/
 
 %changelog
-* Tue Oct 01 2019 Mark Verlinde <mark.verlinde@gmail.com> 1.4.9-1.1
-- rebuild for el7 incuding python3
-- drop ruby support: ruby 2.0.0. is to old
+* Sun Dec 27 2020 Mark Verlinde <mark.verlinde@gmail.com> - 1.4.17-1
+- Adapt to / Rebuild for el7 
+- Drop ruby support: el7 ruby 2.0.0. is to old
+
+* Mon Sep 21 2020 Peter Robinson <pbrobinson@fedoraproject.org> - 1.4.17-1
+- Update to 1.4.17
+
+* Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.14-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Tue May 26 2020 Miro Hrončok <mhroncok@redhat.com> - 1.4.14-4
+- Rebuilt for Python 3.9
+
+* Mon Feb 17 2020 Peter Robinson <pbrobinson@fedoraproject.org> - 1.4.14-3
+- Fix python3 conditioals so python3 bindings are built again
+
+* Sun Feb 16 2020 Denis Arnaud <denis.arnaud_fedora@m4x.org> 1.4.14-2
+- Dropped supprt for Python 2
+
+* Mon Feb 10 2020 Peter Robinson <pbrobinson@fedoraproject.org> 1.4.14-1
+- Update to 1.4.14
+
+* Fri Jan 31 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.13-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
+* Sat Nov 16 2019 Peter Robinson <pbrobinson@fedoraproject.org> 1.4.13-2
+- Drop python2 bindings
+
+* Thu Oct 17 2019 Peter Robinson <pbrobinson@fedoraproject.org> 1.4.13-1
+- Update to 1.4.13
+
+* Thu Oct 03 2019 Miro Hrončok <mhroncok@redhat.com> - 1.4.12-3
+- Rebuilt for Python 3.8.0rc1 (#1748018)
+
+* Wed Aug 21 2019 Miro Hrončok <mhroncok@redhat.com> - 1.4.12-2
+- Rebuilt for Python 3.8
+
+* Tue Aug 20 2019 Peter Robinson <pbrobinson@fedoraproject.org> 1.4.12-1
+- Update to 1.4.12
+
+* Mon Aug 19 2019 Miro Hrončok <mhroncok@redhat.com> - 1.4.11-3
+- Rebuilt for Python 3.8
+
+* Sat Jul 27 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.11-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
+* Tue Apr 16 2019 Peter Robinson <pbrobinson@fedoraproject.org> 1.4.11-1
+- Update to 1.4.11
+
+* Mon Feb 11 2019 Peter Robinson <pbrobinson@fedoraproject.org> 1.4.10-1
+- Update to 1.4.10
+
+* Sun Feb 03 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.9-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
 * Mon Nov 19 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.4.9-1
 - Update to 1.4.9
