@@ -1,5 +1,5 @@
 Name:          xapian-core
-Version:       1.4.9
+Version:       1.4.17
 Release:       1%{?dist}
 Summary:       The Xapian Probabilistic Information Retrieval Library
 License:       GPLv2+
@@ -44,7 +44,7 @@ indexing and search facilities to applications. This package provides the
 files needed for building packages which use Xapian
 
 %prep
-%setup -q
+%autosetup -p1
 
 %build
 # Disable SSE on x86, but leave it intact for x86_64
@@ -58,10 +58,10 @@ files needed for building packages which use Xapian
 sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
-make %{?_smp_mflags} V=1
+%{make_build}
 
 %install
-make install DESTDIR=%{buildroot} INSTALL='install -p'
+%{make_install}
 
 # Remove libtool archives
 find $RPM_BUILD_ROOT -name '*.la' -delete
@@ -104,6 +104,39 @@ rm -rf %{buildroot}%{_datadir}/doc/%{name}
 %{_mandir}/man1/xapian-config.1*
 
 %changelog
+* Mon Sep 21 2020 Peter Robinson <pbrobinson@fedoraproject.org> - 1.4.17-1
+- Update to 1.4.17
+
+* Wed Jul 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.14-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Mon Feb 10 2020 Peter Robinson <pbrobinson@fedoraproject.org> 1.4.14-1
+- Update to 1.4.14
+
+* Fri Jan 31 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.13-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
+* Tue Oct 29 2019 Peter Robinson <pbrobinson@gmail.com> - 1.4.13-2
+- Upstream fix for pruning under a positional check (rhbz 1766219)
+
+* Thu Oct 17 2019 Peter Robinson <pbrobinson@fedoraproject.org> 1.4.13-1
+- Update to 1.4.13
+
+* Tue Aug 20 2019 Peter Robinson <pbrobinson@fedoraproject.org> 1.4.12-1
+- Update to 1.4.12
+
+* Sat Jul 27 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.11-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
+
+* Tue Apr 16 2019 Peter Robinson <pbrobinson@fedoraproject.org> 1.4.11-1
+- Update to 1.4.11
+
+* Mon Feb 11 2019 Peter Robinson <pbrobinson@fedoraproject.org> 1.4.10-1
+- Update to 1.4.10
+
+* Sun Feb 03 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.4.9-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Mon Nov 19 2018 Peter Robinson <pbrobinson@fedoraproject.org> 1.4.9-1
 - Update to 1.4.9
 
