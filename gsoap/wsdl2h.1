@@ -180,10 +180,10 @@ Generate typedef synonyms for structs and enums.
 Compatibility with 2.7.6e: Generate pointer-based arrays.
 .TP
 \fB\-z2\fR
-Compatibility with 2.7.7 to 2.7.15: Qualify element/attribute references.
+Compatibility with 2.7.7-2.7.15: (un)qualify element/attribute references.
 .TP
 \fB\-z3\fR
-Compatibility with 2.7.16 to 2.8.7: Qualify element/attribute references.
+Compatibility with 2.7.16-2.8.7: (un)qualify element/attribute references.
 .TP
 \fB\-z4\fR
 Compatibility up to 2.8.11: Do not generate union structs in \fBstd::vector\fR.
@@ -199,6 +199,12 @@ Compatibility up to 2.8.59: Do not generate \fBstd::vector\fR of class of union.
 .TP
 \fB\-z8\fR
 Compatibility up to 2.8.74: Do not generate qualifiers for doc/lit wrapped patterns.
+.TP
+\fB\-z9\fR
+Compatibility up to 2.8.93: Always qualify element/attribute references.
+.TP
+\fB\-z10\fR
+Compatibility up to 2.8.96: Generate qualifiers even when defined w/o namespace.
 .TP
 \fB\-_\fR
 Do not generate _USCORE (replace with Unicode code point _x005f).

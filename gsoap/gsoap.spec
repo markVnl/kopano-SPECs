@@ -1,8 +1,7 @@
-
 Summary: Generator Tools for Coding SOAP/XML Web Services in C and C++
-Name:    gsoap
-Version: 2.8.91
-Release: 1%{?dist}
+Name: gsoap
+Version: 2.8.104
+Release: 2%{?dist}
 
 # gsoap is licensed both under the gSOAP public license and under GPL version
 # 2 or later with an OpenSSL linking exception.
@@ -29,8 +28,6 @@ Source3: index.html
 Patch0: %{name}-libtool.patch
 # The custom tabs css does not work with newer doxygen - use default version
 Patch1: %{name}-doxygen-tabs.patch
-# Typo in documentation
-Patch2: %{name}-doc-typo.patch
 
 BuildRequires: gcc-c++
 BuildRequires: flex
@@ -68,7 +65,6 @@ gSOAP documentation in html.
 %setup -q -n gsoap-2.8
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 # XML files non-executable
 find gsoap/samples/autotest/databinding/examples -name '*.xml' \
@@ -78,7 +74,8 @@ find gsoap/samples/autotest/databinding/examples -name '*.xml' \
 chmod a-x gsoap/doc/fonts/*
 
 # We want all txt files to have unix end-of-line encoding
-dos2unix -k README.txt LICENSE.txt NOTES.txt GPLv2_license.txt
+dos2unix -k README.txt LICENSE.txt NOTES.txt GPLv2_license.txt \
+    gsoap/plugin/sessions.c gsoap/plugin/sessions.h
 
 # Remove stuff with gsoap license only - not GPL
 rm -rf gsoap/extras gsoap/mod_gsoap gsoap/Symbian
@@ -87,13 +84,13 @@ rm -rf gsoap/doc/apache gsoap/doc/wininet gsoap/doc/isapi
 
 # Remove pre-compiled binaries
 rm -rf gsoap/bin
-rm gsoap/samples/calc_vs2005/calc_vs2005/soapcpp2.exe
 rm gsoap/samples/rest/person
 rm gsoap/samples/wcf/Basic/TransportSecurity/calculator
 rm gsoap/VisualStudio2005/wsdl2h/wsdl2h/soapcpp2.exe
 
 # Remove pre-generated files
 rm gsoap/samples/webserver/opt{C.c,H.h,Stub.h}
+rm gsoap/VisualStudio2005/wsdl2h/wsdl2h/wsdl{C.cpp,H.h,Stub.h}
 
 # Remove .DS_Store files
 find . -name .DS_Store -exec rm {} ';'
@@ -121,7 +118,7 @@ rm guide/index.md guide/stdsoap2.h soapdoc2.html
 rm GeniviaLogo2_trans_noslogan.png
 rm genivia_content.css genivia_tabs.css
 rm */Doxyfile
-# rm */html/genivia_tabs.css
+rm */html/genivia_tabs.css
 rm -f */doxygen_sqlite3.db
 popd
 install -m 644 -p %{SOURCE3} gsoap/doc-build
@@ -129,6 +126,8 @@ install -m 644 -p %{SOURCE3} gsoap/doc-build
 %install
 make install DESTDIR=%{buildroot}
 rm -f %{buildroot}/%_libdir/*.la
+rm %{buildroot}/%_datadir/gsoap/plugin/testmsgr-httpda.o
+rm %{buildroot}/%_datadir/gsoap/plugin/testmsgr-smdevp.o
 
 mkdir -p %{buildroot}/%_mandir/man1
 install -m 644 -p %{SOURCE1} %{SOURCE2} %{buildroot}/%_mandir/man1
@@ -373,9 +372,18 @@ make check
 %license LICENSE.txt GPLv2_license.txt
 
 %changelog
-* Fri Sep 06 2019 Mark Verlinde <mark.verlinde@gmail.com> - 2.8.91-2
-- Rebuild for el7
-- spec line 123 "rm */html/genivia_tabs.css" broke (re)build
+* Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.8.104-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
+* Tue Jul 21 2020 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.8.104-1
+- Update to gsoap 2.8.104
+- Drop patches gsoap-doc-typo.patch and gsoap-yylval.patch
+
+* Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.8.91-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
+* Fri Jan 24 2020 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.8.91-2
+- Link failure - multiple definition of yylval
 
 * Fri Aug 16 2019 Mattias Ellert <mattias.ellert@physics.uu.se> - 2.8.91-1
 - Update to gsoap 2.8.91
