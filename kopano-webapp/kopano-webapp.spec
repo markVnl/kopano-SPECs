@@ -18,8 +18,8 @@
 %define plugindir %{_datadir}/%{name}/plugins
 
 Name:           kopano-webapp
-Version:        3.5.10
-Release:        0.2%{?dist}
+Version:        4.6.2
+Release:        1%{?dist}
 Summary:        Improved WebApp for Kopano
 License:        AGPL-3.0-only
 Url:            https://kopano.io
@@ -37,14 +37,14 @@ BuildRequires:  libxml2
 
 Requires:       %{name}-lang = %{version}
 
-Requires:       php72-mapi
-Requires:       rh-php72
-Requires:       rh-php72-php-fpm
+Requires:       php73-mapi
+Requires:       rh-php73
+Requires:       rh-php73-php-fpm
 
 # On el7 (centos) these 3 are provided by (rh-php7x-)php-common; a dependency of (rh-php7x-)php
-#Requires:       rh-php72-php-gettext
-#Requires:       rh-php72-php-openssl
-#Requires:       rh-php72-php-zlib
+#Requires:       rh-php73-php-gettext
+#Requires:       rh-php73-php-openssl
+#Requires:       rh-php73-php-zlib
 
 %description
 Provides a web-client written in PHP that makes use of Jason and ExtJS
@@ -197,12 +197,6 @@ mkdir -p "%{buildroot}%{_localstatedir}/lib/%{name}/tmp"
 %dir %{plugindir}
 %{plugindir}/contactfax
 
-%files folderwidgets
-%defattr(-,root,root)
-%dir %{_datadir}/%{name}
-%dir %{plugindir}
-%{plugindir}/folderwidgets
-
 %files gmaps
 %defattr(-,root,root)
 %dir %{_datadir}/%{name}
@@ -215,31 +209,11 @@ mkdir -p "%{buildroot}%{_localstatedir}/lib/%{name}/tmp"
 %dir %{plugindir}
 %{plugindir}/pimfolder
 
-%files quickitems
-%defattr(-,root,root)
-%dir %{_datadir}/%{name}
-%dir %{plugindir}
-%{plugindir}/quickitems
-
-%files titlecounter
-%defattr(-,root,root)
-%dir %{_datadir}/%{name}
-%dir %{plugindir}
-%{plugindir}/titlecounter
-
-%files webappmanual
-%defattr(-,root,root)
-%dir %{_datadir}/%{name}
-%dir %{plugindir}
-%{plugindir}/webappmanual
-
-%files zdeveloper
-%defattr(-,root,root)
-%dir %{_datadir}/%{name}
-%dir %{plugindir}
-%{plugindir}/zdeveloper
-
 %changelog
+* Sun Dec 27 2020 mark Verlinde <mark.verlinde@gmail.com> 4.6.3-1
+- rh-php73-php-fpm is a default requirment now
+- Update to 4.6.3
+
 * Tue Oct 01 2019 mark Verlinde <mark.verlinde@gmail.com>
 - rh-php72-php-fpm is a default requirment now
 - Update to 3.5.10
