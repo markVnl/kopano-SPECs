@@ -12,32 +12,27 @@
 # license that conforms to the Open Source Definition (Version 1.9)
 # published by the Open Source Initiative.
 
-# Please submit bugfixes or comments via http://bugs.opensuse.org/
-#
-
 
 Name:           libvmime
-%define lname	libvmime-kopano3
+%define         lname	libvmime-kopano3
 Summary:        Library for working with RFC 5322, MIME messages and IMAP/POP/SMTP
 License:        GPL-3.0-or-later
-Group:          Development/Libraries/C and C++
+Group:          System Environment/Libraries
 Version:        0.9.2.96
-Release:        lp152.12.1
-URL:            http://vmime.org/
+Release:        1.1%{?dist}
+Url:            http://vmime.org/
 
 #Source:         https://github.com/kisli/vmime/archive/v%%version.tar.gz
 Source:         vmime-%version.tar.xz
 Patch1:         libvmime-nodatetime.diff
 BuildRequires:  ImageMagick
-BuildRequires:  cmake >= 2.8.3
+BuildRequires:  cmake3 >= 3.1
 BuildRequires:  doxygen
 BuildRequires:  gcc-c++
 BuildRequires:  inkscape
-BuildRequires:  libgnutls-devel
-%if !0%{?sle_version}
+BuildRequires:  gnutls-devel
 BuildRequires:  libgsasl-devel
-%endif
-BuildRequires:  pkg-config
+BuildRequires:  pkgconfig
 BuildRequires:  texlive-latex
 BuildRequires:  texlive-collection-fontsrecommended
 BuildRequires:  tex(courier.sty)
@@ -45,6 +40,7 @@ BuildRequires:  tex(fancyheadings.sty)
 BuildRequires:  tex(pcrr7t.tfm)
 BuildRequires:  tex(ucs.sty)
 BuildRequires:  xz
+BuildRequires:  devtoolset-7
 
 %description
 VMime is a C++ class library for working with RFC5322 and
@@ -84,25 +80,21 @@ This subpackage contains the headers for the library's API.
 %autosetup -p1 -n vmime-%version
 
 %build
-%if 0%{?with_pdf}
-pushd doc/book/
-make book_pdf
-popd
-%endif
+source /opt/rh/devtoolset-7/enable
+
+
 
 cf="%optflags -DVMIME_ALWAYS_GENERATE_7BIT_PARAMETER=1"
-%cmake \
-        -DCMAKE_INSTALL_PREFIX:PATH="%_prefix" \
-        -DINCLUDE_INSTALL_DIR:PATH="%_includedir" \
-        -DLIB_INSTALL_DIR:PATH="%_libdir" \
-        -DSYSCONF_INSTALL_DIR:PATH="%_sysconfdir" \
-        -DSHARE_INSTALL_PREFIX:PATH="%_datadir" \
-        -DCMAKE_INSTALL_LIBDIR:PATH="%_libdir" \
+%cmake3 \
+  -DCMAKE_INSTALL_PREFIX:PATH="%_prefix" \
+  -DINCLUDE_INSTALL_DIR:PATH="%_includedir" \
+  -DLIB_INSTALL_DIR:PATH="%_libdir" \
+  -DSYSCONF_INSTALL_DIR:PATH="%_sysconfdir" \
+  -DSHARE_INSTALL_PREFIX:PATH="%_datadir" \
+  -DCMAKE_INSTALL_LIBDIR:PATH="%_libdir" \
 	-DVMIME_SENDMAIL_PATH:STRING="%_sbindir/sendmail" \
 	-DVMIME_BUILD_SAMPLES:BOOL=OFF \
-%if 0%{?sle_version}
 	-DVMIME_HAVE_SASL_SUPPORT:BOOL=OFF \
-%endif
 	-DVMIME_HAVE_TLS_SUPPORT:BOOL=ON \
 	-DVMIME_BUILD_STATIC_LIBRARY:BOOL=OFF \
 	-DCMAKE_BUILD_TYPE:STRING="RelWithDebInfo" \
@@ -114,11 +106,7 @@ make %{?_smp_mflags} VERBOSE=1
 
 %install
 b="%buildroot"
-%if 0%{?with_pdf}
-mkdir -p "$b/%_docdir/%name"
-cp -a doc/book/book.pdf "$b/%_docdir/%name/"
-%endif
-%cmake_install
+%cmake3_install
 find "$b" -type f -name "*.la" -delete
 mkdir -p "$b/%_datadir"
 mv "$b/%_prefix/cmake" "$b/%_datadir/"
@@ -127,7 +115,8 @@ mv "$b/%_prefix/cmake" "$b/%_datadir/"
 %postun -n %lname -p /sbin/ldconfig
 
 %files -n %lname
-%license COPYING
+%defattr(-,root,root)
+%doc COPYING
 %_libdir/libvmime-kopano.so.3*
 
 %files devel
@@ -136,11 +125,10 @@ mv "$b/%_prefix/cmake" "$b/%_datadir/"
 %_libdir/libvmime-kopano.so
 %_libdir/pkgconfig/*.pc
 %_datadir/cmake/
-%if 0%{?with_pdf}
-%_docdir/%name
-%endif
 
 %changelog
+* Sun Dec 27 2020 Mark Verlinde <mark.verlinde@gmail.com> - 0.9.2.96-1.1
+- Adapt to / Rebuild for el7 
 * Sun Oct  6 2019 Jan Engelhardt <jengelh@inai.de>
 - Update to 0.9.2k4 (0.9.2.96)
   * Skip delimiter lines that are not exactly equal to the boundary
