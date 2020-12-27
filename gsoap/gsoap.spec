@@ -1,7 +1,7 @@
 Summary: Generator Tools for Coding SOAP/XML Web Services in C and C++
 Name: gsoap
 Version: 2.8.104
-Release: 2%{?dist}
+Release: 2.1%{?dist}
 
 # gsoap is licensed both under the gSOAP public license and under GPL version
 # 2 or later with an OpenSSL linking exception.
@@ -118,7 +118,7 @@ rm guide/index.md guide/stdsoap2.h soapdoc2.html
 rm GeniviaLogo2_trans_noslogan.png
 rm genivia_content.css genivia_tabs.css
 rm */Doxyfile
-rm */html/genivia_tabs.css
+#rm */html/genivia_tabs.css
 rm -f */doxygen_sqlite3.db
 popd
 install -m 644 -p %{SOURCE3} gsoap/doc-build
@@ -372,6 +372,10 @@ make check
 %license LICENSE.txt GPLv2_license.txt
 
 %changelog
+* Sun Dec 27 2020 Mark Verlinde <mark.verlinde@gmail.com> - 2.8.104-2.1
+- Adapt to / Rebuild for el7  
+- rm */html/genivia_tabs.css (line 121) still breaks rebuild on el7
+
 * Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.8.104-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 
