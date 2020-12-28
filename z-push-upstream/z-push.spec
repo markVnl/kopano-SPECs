@@ -1,8 +1,8 @@
-%define with_rh_php72 1
+%define with_rh_php73 1
 
 Name:       z-push
-Version:    2.5.1
-Release:    0.1
+Version:    2.6.1
+Release:    1
 Summary:    An implementation of Microsoft's ActiveSync protocol
 Group:      Applications/Productivity
 License:    AGPL-3.0
@@ -22,11 +22,11 @@ Z-push is an implementation of the ActiveSync protocol which is used 'over-the-a
 Summary:    Z-Push core package
 Group:      Applications/Productivity
 
-%if %with_rh_php72
-Requires:   rh-php72
-Requires:   rh-php72-php-soap
-Requires:   rh-php72-php-mbstring
-Requires:   rh-php72-php-process
+%if %with_rh_php73
+Requires:   rh-php73
+Requires:   rh-php73-php-soap
+Requires:   rh-php73-php-mbstring
+Requires:   rh-php73-php-process
 %else
 Requires:   php >= 5.4.0
 Requires:   php-soap
@@ -44,9 +44,9 @@ Summary:    Z-Push caldav backend
 Group:      Applications/Productivity
 Requires:   %name-common = %{version}
 Requires:   php-awl
-%if %with_rh_php72
-Requires:   rh-php72-php-common
-Requires:   rh-php72-php-xml
+%if %with_rh_php73
+Requires:   rh-php73-php-common
+Requires:   rh-php73-php-xml
 %else
 Requires:   php-xml
 %endif
@@ -82,8 +82,8 @@ Summary:    Z-Push imap backend
 Group:      Applications/Productivity
 Requires:   %name-common = %{version}
 Requires:   php-awl
-%if %with_rh_php72
-Requires:   rh-php72-php-imap
+%if %with_rh_php73
+Requires:   rh-php73-php-imap
 %else
 Requires:   php-imap
 %endif
@@ -97,8 +97,8 @@ Backend for Z-Push, that adds the ability to connect to a imap server
 Summary:    Z-Push ldap backend
 Group:      Applications/Productivity
 Requires:   %name-common = %{version}
-%if %with_rh_php72
-Requires:   rh-php72-php-ldap
+%if %with_rh_php73
+Requires:   rh-php73-php-ldap
 %else
 Requires:   php-ldap
 %endif
@@ -112,8 +112,8 @@ Backend for Z-Push, that adds the ability to connect to a ldap server
 Summary:    Z-Push Kopano backend
 Group:      Applications/Productivity
 Requires:   %name-common = %{version}
-%if %with_rh_php72
-Requires:   php72-mapi
+%if %with_rh_php73
+Requires:   php73-mapi
 %else
 Requires:   php-mapi
 %endif
@@ -135,8 +135,8 @@ Z-Push for Kopano meta package
 %package -n %name-kopano-gabsync
 Summary:    GAB sync for Kopano
 Group:      Applications/Productivity
-%if %with_rh_php72
-Requires:   php72-mapi
+%if %with_rh_php73
+Requires:   php73-mapi
 %else
 Requires:   php-mapi
 %endif
@@ -148,8 +148,8 @@ Synchronizes a Kopano global address book
 Summary:    GAB sync into a contacts folder for Kopano
 Group:      Applications/Productivity
 Requires:   %name-common = %{version}
-%if %with_rh_php72
-Requires:   php72-mapi
+%if %with_rh_php73
+Requires:   php73-mapi
 %else
 Requires:   php-mapi
 %endif
@@ -162,8 +162,8 @@ Synchronizes a Kopano global address book into a contacts folder
 Summary:    Z-Push ipc shared memory provider
 Group:      Applications/Productivity
 Requires:   %name-common = %{version}
-%if %with_rh_php72
-Requires:   rh-php72-php-process
+%if %with_rh_php73
+Requires:   rh-php73-php-process
 %else
 Requires:   php-sysvshm
 Requires:   php-sysvsem
@@ -179,8 +179,8 @@ Summary:    Z-Push ipc memcached provider
 Group:      Applications/Productivity
 Requires:   %name-common = %{version}
 Requires:   memcached
-%if %with_rh_php72
-Requires:   sclo-php72-php-pecl-memcached
+%if %with_rh_php73
+Requires:   sclo-php73-php-pecl-memcached
 %else
 Requires:   php-pecl-memcached
 %endif
@@ -193,8 +193,8 @@ Provider for Z-Push, that adds the ability to use ipc memcached
 Summary:    Z-Push ldap search backend
 Group:      Applications/Productivity
 Requires:   %name-common = %{version}
-%if %with_rh_php72
-Requires:   rh-php72-php-ldap
+%if %with_rh_php73
+Requires:   rh-php73-php-ldap
 %else
 Requires:   php-ldap
 %endif
@@ -208,9 +208,9 @@ Backend for Z-Push, that adds the ability to search a ldap server
 Summary:    Z-Push mysql state backend
 Group:      Applications/Productivity
 Requires:   %name-common = %{version}
-%if %with_rh_php72
-Requires:   rh-php72-php-mysqlnd
-Requires:   rh-php72-php-pdo
+%if %with_rh_php73
+Requires:   rh-php73-php-mysqlnd
+Requires:   rh-php73-php-pdo
 %else
 Requires:   php-mysql
 Requires:   php-pdo
@@ -220,13 +220,13 @@ Requires:   php-pdo
 Backend for Z-Push, that adds the ability to save states in a mysql database
 
 # AUTODISCOVER
-# check for rh-php72
+# check for rh-php73
 %package -n %name-autodiscover
 Summary:    Z-Push autodiscover
 Group:      Applications/Productivity
 Requires:   %name-common = %{version}
-%if %with_rh_php72
-Requires:   rh-php72-php-xml
+%if %with_rh_php73
+Requires:   rh-php73-php-xml
 %else
 Requires:   php-xml
 %endif
@@ -240,8 +240,8 @@ Autodiscover for Z-Push backends
 Summary:    Z-Push apache configuration
 Group:      Applications/Productivity
 Requires:   %name-common = %{version}
-%if %with_rh_php72
-Requires:   rh-php72-php-fpm
+%if %with_rh_php73
+Requires:   rh-php73-php-fpm
 %endif
 Requires:   httpd
 
@@ -254,8 +254,8 @@ Z-push apache configuration files
 Summary:    Z-Push autodiscover apache configuration
 Group:      Applications/Productivity
 Requires:   %name-autodiscover = %{version}
-%if %with_rh_php72
-Requires:   rh-php72-php-fpm
+%if %with_rh_php73
+Requires:   rh-php73-php-fpm
 %endif
 Requires:   httpd
 
@@ -366,7 +366,7 @@ ln -s %{_sysconfdir}/z-push/autodiscover.conf.php %{buildroot}%{_datadir}/z-push
 
 # APACHE
 mkdir -p %{buildroot}%{_sysconfdir}/httpd/conf.d
-%if %with_rh_php72
+%if %with_rh_php73
 install -m 0664 %{SOURCE1} \
     %{buildroot}%{_sysconfdir}/httpd/conf.d/z-push.conf
 install -m 0664 %{SOURCE2} \
@@ -401,7 +401,7 @@ service httpd reload || true
 
 %post -n %name-ipc-memcached
 # check
-%if %with_rh_php72
+%if %with_rh_php73
 echo -e "\033[0;33mMake sure you have scl repositories enabled.\n\033[0m"
 %endif
 
@@ -575,3 +575,11 @@ service nginx reload || true
 #%%config(noreplace) %attr(0640,nginx,z-push) %_sysconfdir/nginx/sites-available/z-push.conf
 
 %changelog
+
+* Mon Dec 28 2020 Mark Verlinde <mark.verlinde@gmail.com> - 2.6.1-1
+- update to 2.6.1
+- require rh-php73
+
+* Wed Oct 2 2019 Verlinde <mark.verlinde@gmail.com> - 2.5.1
+- intial build
+- require rh-php72
