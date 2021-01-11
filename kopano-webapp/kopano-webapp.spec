@@ -34,6 +34,8 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  ant
 BuildRequires:  xz
 BuildRequires:  libxml2
+BuildRequires:  gettext
+BuildRequires:  rh-php73
 
 Requires:       %{name}-lang = %{version}
 
@@ -125,10 +127,10 @@ find . -type f "(" -name "*.js" -o -name "*.php" ")" \
 echo "%{version}" > version
 
 %build
-ant deploy deploy-plugins;
+source /opt/rh/rh-php73/enable
+%{make_build}
 
 %install
-
 mkdir -p "%{buildroot}/%{_datadir}";
 cp -a deploy "%{buildroot}/%{_datadir}/%{name}";
 mkdir -p "%{buildroot}/%{_sysconfdir}/httpd/conf.d"
