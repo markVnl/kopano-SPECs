@@ -16,7 +16,7 @@
 
 
 Name:           kopano
-Version:        8.7.6
+Version:        8.7.17
 Release:        0.1%{?dist}
 Summary:        Groupware server suite
 License:        AGPL-3.0-only
@@ -58,7 +58,7 @@ BuildRequires:  pkgconfig(xapian-core)
 BuildRequires:  elinks
 BuildRequires:  python3-xapian
 BuildRequires:  mariadb-devel
-BuildRequires:  rh-php72-php-devel
+BuildRequires:  rh-php73-php-devel
 BuildRequires:  devtoolset-7
 # TODO: check BuildRequires
 BuildRequires:  libHX-devel
@@ -161,8 +161,8 @@ Group:          System Environment/Daemons
 Requires:       kopano-common
 Requires:       kopano-lang = %version
 #TODO: check Requires
-#Requires:       rh-php72
-#Requires:       php72-mapi
+#Requires:       rh-php73
+#Requires:       php73-mapi
 Requires:	python3-mapi
 
 %description dagent
@@ -468,16 +468,17 @@ MAPI allows client programs to become (e-mail) messaging-enabled,
 -aware, or -based by calling MAPI subsystem routines that interface
 with certain messaging servers.
 
-%package -n php72-mapi
+%package -n php73-mapi
 Summary:        PHP bindings for MAPI
 # php-ext is the one thing that can also request the "ZCONTACTS" provider
 Group:          Development/Languages
 Requires:       kopano-client = %version
 Requires:       kopano-contacts = %version
+Obsoletes:      php72-mapi
 Obsoletes:      php5-mapi
 Provides:       php5-mapi
 
-%description -n php72-mapi
+%description -n php73-mapi
 Using this module, you can create PHP programs which use MAPI calls
 to interact with Kopano.
 
@@ -525,7 +526,7 @@ Provides some files under old module names.
 
 #TODO: use scl_macro's
 source /opt/rh/devtoolset-7/enable
-source /opt/rh/rh-php72/enable
+source /opt/rh/rh-php73/enable
 
 autoreconf -fi
 export CFLAGS="%optflags"
@@ -580,9 +581,9 @@ done
 mkdir -p %{buildroot}/%{_unitdir}/kopano-dagent.service.d
 cat > %{buildroot}/%{_unitdir}/kopano-dagent.service.d/scl.conf <<-EOF
 [Service]
-Environment=X_SCLS=rh-php72
-Environment=LD_LIBRARY_PATH=/opt/rh/rh-php72/root/usr/lib64
-Environment=PATH=/usr/local/sbin:/usr/local/bin:/opt/rh/rh-php72/root/usr/sbin:/opt/rh/rh-php72/root/usr/bin:/usr/sbin:/usr/bin
+Environment=X_SCLS=rh-php73
+Environment=LD_LIBRARY_PATH=/opt/rh/rh-php73/root/usr/lib64
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/opt/rh/rh-php73/root/usr/sbin:/opt/rh/rh-php73/root/usr/bin:/usr/sbin:/usr/bin
 EOF
 
 # some default dirs
@@ -1185,6 +1186,7 @@ fi
 %_sbindir/kopano-dbadm
 %_sbindir/kopano-srvadm
 %_sbindir/kopano-storeadm
+%_bindir/kopano-vcfimport
 %_mandir/man*/kopano-admin.*
 %exclude %_mandir/man*/kopano-cfgchecker.*
 %_mandir/man*/kopano-dbadm.*
@@ -1195,9 +1197,11 @@ fi
 %_mandir/man*/kopano-srvadm.*
 %_mandir/man*/kopano-stats.*
 %_mandir/man*/kopano-storeadm.*
+%_mandir/man*/kopano-vcfimport.*
 %dir %_libexecdir/kopano
 %_libexecdir/kopano/mapitime
 %_libexecdir/kopano/kscriptrun
+%_libexecdir/kopano/eidprint
 %dir %_docdir/kopano
 %dir %_docdir/kopano/example-config
 %_docdir/kopano/example-config/admin.cfg
@@ -1247,12 +1251,12 @@ fi
 %_libdir/libmapi.so.1*
 
 
-%files -n php72-mapi
+%files -n php73-mapi
 %defattr(-,root,root)
-%dir /etc/opt/rh/rh-php72/php.d
-%dir /opt/rh/rh-php72/root/usr/lib64/php/modules
-%config(noreplace) /etc/opt/rh/rh-php72/php.d/mapi.ini
-/opt/rh/rh-php72/root/usr/lib64/php/modules/mapi*
+%dir /etc/opt/rh/rh-php73/php.d
+%dir /opt/rh/rh-php73/root/usr/lib64/php/modules
+%config(noreplace) /etc/opt/rh/rh-php73/php.d/mapi.ini
+/opt/rh/rh-php73/root/usr/lib64/php/modules/mapi*
 %dir %_datadir/kopano/
 %_datadir/kopano/php/
 
