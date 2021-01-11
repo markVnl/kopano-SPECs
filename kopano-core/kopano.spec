@@ -283,22 +283,6 @@ Requires:       python3-kopano = %version
 %description python3-utils
 Command-line clients to manipulate mailboxes (stores) in various ways.
 
-%package search
-Summary:        Indexed search engine for Kopano Core
-Group:          System Environment/Daemons
-Requires:       kopano-common
-Requires:       python3-xapian
-Requires:       python3-kopano = %version
-Requires:       elinks
-Requires:       poppler-utils
-Requires:       xapian-core
-
-%description search
-kopano-search creates indexes for messages and attachments per user.
-When this service is running, search queries on the server will use
-this index to quickly find messages and contents of attached
-documents, enhancing the search performance of kopano-server.
-
 %package server
 Summary:        Server component for Kopano Core
 Group:          System Environment/Daemons
@@ -322,7 +306,6 @@ Requires:       kopano-gateway = %version
 Requires:       kopano-ical = %version
 Requires:       kopano-monitor = %version
 Requires:       kopano-python3-utils = %version
-Requires:       kopano-search = %version
 Requires:       kopano-server = %version
 Requires:       kopano-spooler = %version
 Requires:       kopano-utils = %version
@@ -564,6 +547,17 @@ rm -Rf %{buildroot}/%_unitdir/kopano-presence.service \
        %{buildroot}/%_docdir/kopano/example-config/presence.cfg \
        %{buildroot}/%python3_sitelib/kopano_presence*
 
+# due to python3 requirements we do not package kopano-search
+rm -rf %{buildroot}/%_sysconfdir/kopano/searchscripts \
+       %{buildroot}/%_unitdir/kopano-search.service \
+       %{buildroot}/%_sbindir/kopano-search \
+       %{buildroot}/%_sbindir/kopano-search-xapian* \
+       %{buildroot}/%_docdir/kopano/example-config/search.cfg \
+       %{buildroot}/%python3_sitelib/kopano_search* \
+       %{buildroot}/%_docdir/kopano/example-config/apparmor.d/*kopano-search \
+       %{buildroot}/%_mandir/man5/kopano-search* \
+       %{buildroot}%_mandir/man8/kopano-search*
+
 cp -a RELNOTES.txt %{buildroot}/%_docdir/kopano/
 find %{buildroot} -type f -name "*.la" -print -delete
 
@@ -750,28 +744,6 @@ if [ ! -e "%_sysconfdir/kopano/monitor.cfg" -a \
 fi
 %systemd_postun_with_restart kopano-monitor.service
 
-%pre search
-# nothing to do?
-
-%post search
-chown -Rh kopano:kopano /var/log/kopano 2>/dev/null || :
-%systemd_post kopano-search.service
-
-%preun search
-%systemd_preun kopano-search.service
-
-%postun search
-%systemd_postun_with_restart kopano-search.service
-
-%triggerpostun search -- kopano-search
-if [ "$1" -ne 2 ]; then exit 0; fi
-# putback previously existing cfgs after they get untracked once
-if [ ! -e "%_sysconfdir/kopano/search.cfg" -a \
-     -e "%_sysconfdir/kopano/search.cfg.rpmsave" ]; then
-  mv -v "%_sysconfdir/kopano/search.cfg.rpmsave" \
-    "%_sysconfdir/kopano/search.cfg"
-fi
-%systemd_postun_with_restart kopano-search.service
 
 %pre server
 # nothing to do?
@@ -1076,29 +1048,6 @@ fi
 %_mandir/man*/kopano-set-oof.*
 %python3_sitelib/kopano_cli/
 %python3_sitelib/kopano_cli*.egg-info
-
-%files search
-%defattr(-,root,root)
-%dir %_sysconfdir/kopano
-%dir %_sysconfdir/kopano/searchscripts
-%config(noreplace) %attr(0640,root,kopano) %_sysconfdir/kopano/searchscripts/*.db
-%config(noreplace) %attr(-,root,kopano) %_sysconfdir/kopano/searchscripts/*.xslt
-%config(noreplace) %attr(-,root,kopano) %_sysconfdir/kopano/searchscripts/attachments_parser
-%config(noreplace) %attr(-,root,kopano) %_sysconfdir/kopano/searchscripts/zmktemp
-%_sbindir/kopano-search
-%_sbindir/kopano-search-xapian-compact.py
-%_unitdir/kopano-search.service
-%_mandir/man*/kopano-search.*
-%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/
-%attr(0755,kopano,kopano) %dir %_sharedstatedir/kopano/search/
-%attr(0750,kopano,kopano) %dir %_localstatedir/log/kopano/
-%dir %_docdir/kopano
-%dir %_docdir/kopano/example-config
-%_docdir/kopano/example-config/search.cfg
-%dir %_docdir/kopano/example-config/apparmor.d/
-%_docdir/kopano/example-config/apparmor.d/usr.sbin.kopano-search
-%python3_sitelib/kopano_search/
-%python3_sitelib/kopano_search-*.egg-info
 
 %files server
 %defattr(-,root,root)
