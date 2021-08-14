@@ -2,6 +2,8 @@
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 %global __libtoolize :
 
+%bcond_without python3
+
 Summary: A utility for determining file types
 Name: file
 Version: 5.11
@@ -127,6 +129,21 @@ This package contains the Python bindings to allow access to the
 libmagic API. The libmagic library is also used by the familiar
 file(1) command.
 
+%if %{with python3}
+%package -n python3-magic
+Summary: Python 3 bindings for the libmagic API
+Group:   Development/Libraries
+BuildRequires: python3-devel
+BuildArch: noarch
+Requires: %{name} = %{version}-%{release}
+
+%description -n python3-magic
+This package contains the Python 3 bindings to allow access to the
+libmagic API. The libmagic library is also used by the familiar
+file(1) command.
+%endif
+
+
 %prep
 
 # Don't use -b -- it will lead to problems when compiling magic file!
@@ -196,6 +213,12 @@ iconv -f iso-8859-1 -t utf-8 < doc/libmagic.man > doc/libmagic.man_
 touch -r doc/libmagic.man doc/libmagic.man_
 mv doc/libmagic.man_ doc/libmagic.man
 
+%if %{with python3}
+rm -rf %{py3dir}
+cp -a python %{py3dir}
+sed -i "s/env python/env python3/" %{py3dir}/magic.py
+%endif
+
 %build
 CFLAGS="%{optflags} -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE" \
 %configure --enable-fsect-man5 --disable-rpath
@@ -206,6 +229,10 @@ export LD_LIBRARY_PATH=%{_builddir}/%{name}-%{version}/src/.libs
 make
 cd python
 CFLAGS="%{optflags}" %{__python} setup.py build
+%if %{with python3}
+cd %{py3dir}
+CFLAGS="%{optflags}" %{__python3} setup.py build
+%endif
 
 %install
 mkdir -p ${RPM_BUILD_ROOT}%{_bindir}
@@ -228,6 +255,10 @@ ln -s ../magic ${RPM_BUILD_ROOT}%{_datadir}/file/magic
 
 cd python
 %{__python} setup.py install -O1 --skip-build --root ${RPM_BUILD_ROOT}
+%if %{with python3}
+cd %{py3dir}
+%{__python3} setup.py install -O1 --skip-build --root ${RPM_BUILD_ROOT}
+%endif
 %{__install} -d ${RPM_BUILD_ROOT}%{_datadir}/%{name}
 
 %post libs -p /sbin/ldconfig
@@ -265,7 +296,20 @@ cd python
 %{python_sitelib}/*egg-info
 %endif
 
+%if %{with python3}
+%files -n python3-magic
+%{!?_licensedir:%global license %%doc}
+%license COPYING
+%doc python/README python/example.py
+%{python3_sitelib}/magic.py
+%{python3_sitelib}/*egg-info
+%{python3_sitelib}/__pycache__/*
+%endif
+
 %changelog
+* Sat Aug 14 2021 Merk Verkinde <mark.verlinde@gmail.com> - 5.11-37
+-  build with python3 bindings
+
 * Mon Nov 18 2019 Kamil Dudka <kdudka@redhat.com> - 5.11-37
 - remove wrong magic for JFFS file system (#1773477)
 
