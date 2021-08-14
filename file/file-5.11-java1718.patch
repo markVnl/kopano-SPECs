@@ -1,0 +1,13 @@
+diff --git a/magic/Magdir/cafebabe b/magic/Magdir/cafebabe
+index 6400e2f..6f2e96d 100644
+--- a/magic/Magdir/cafebabe
++++ b/magic/Magdir/cafebabe
+@@ -27,6 +27,8 @@
+ >>4	belong		0x0030		(Java 1.4)
+ >>4	belong		0x0031		(Java 1.5)
+ >>4	belong		0x0032		(Java 1.6)
++>>4	belong		0x0033		(Java 1.7)
++>>4	belong		0x0034		(Java 1.8)
+ 
+ 
+ 0	belong		0xcafebabe

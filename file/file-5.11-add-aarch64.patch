@@ -1,0 +1,32 @@
+From a5c989d3d36e51293a0474c4653f595dcfb94751 Mon Sep 17 00:00:00 2001
+From: Jeffrey Bastian <jbastian@redhat.com>
+Date: Thu, 20 Feb 2014 15:45:42 -0500
+Subject: [PATCH] add aarch64
+
+backport of upstream https://github.com/glensc/file/commit/2dccf6a6615f
+---
+ magic/Magdir/elf | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/magic/Magdir/elf b/magic/Magdir/elf
+index 8e3b7bc..e0e9937 100644
+--- a/magic/Magdir/elf
++++ b/magic/Magdir/elf
+@@ -148,12 +148,11 @@
+ >>18	leshort		97		NatSemi 32k,
+ >>18	leshort		106		Analog Devices Blackfin,
+ >>18	leshort		113		Altera Nios II,
+->>18	leshort		0xae		META,
++>>18	leshort		174		META,
++>>18	leshort		183		ARM aarch64,
+ >>18	leshort		187		Tilera TILE64,
+ >>18	leshort		188		Tilera TILEPro,
+ >>18	leshort		191		Tilera TILE-Gx,
+->>18	leshort		0x3426		OpenRISC (obsolete),
+->>18	leshort		0x8472		OpenRISC (obsolete),
+ >>18	leshort		0x9026		Alpha (unofficial),
+ >>20	lelong		0		invalid version
+ >>20	lelong		1		version 1
+-- 
+1.8.3.1
+

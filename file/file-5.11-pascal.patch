@@ -1,0 +1,16 @@
+diff --git a/magic/Magdir/pascal b/magic/Magdir/pascal
+index a134a47..d8e61c6 100644
+--- a/magic/Magdir/pascal
++++ b/magic/Magdir/pascal
+@@ -4,7 +4,7 @@
+ #
+ 0	search/8192	(input,		Pascal source text
+ !:mime	text/x-pascal
+-0	regex		\^program	Pascal source text
+-!:mime	text/x-pascal
+-0	regex           	\^record		Pascal source text
+-!:mime	text/x-pascal
++#0	regex		\^program	Pascal source text
++#!:mime	text/x-pascal
++#0	regex           	\^record		Pascal source text
++#!:mime	text/x-pascal

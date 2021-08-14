@@ -1,0 +1,15 @@
+diff --git a/magic/Magdir/database b/magic/Magdir/database
+index 5c38f5c..a17cc42 100644
+--- a/magic/Magdir/database
++++ b/magic/Magdir/database
+@@ -84,8 +84,8 @@
+ #
+ #
+ # Round Robin Database Tool by Tobias Oetiker <oetiker@ee.ethz.ch>
+-0	string	RRD		RRDTool DB
+->4	string	x		version %s
++0	string/b	RRD\0		RRDTool DB
++>4	string/b	x		version %s
+ #----------------------------------------------------------------------
+ # ROOT: file(1) magic for ROOT databases
+ #

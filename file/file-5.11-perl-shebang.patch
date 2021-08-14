@@ -1,0 +1,37 @@
+diff --git a/magic/Magdir/perl b/magic/Magdir/perl
+index ef0cc6d..453665c 100644
+--- a/magic/Magdir/perl
++++ b/magic/Magdir/perl
+@@ -5,24 +5,22 @@
+ # The `eval' lines recognizes an outrageously clever hack.
+ # Keith Waclena <keith@cerberus.uchicago.edu>
+ # Send additions to <perl5-porters@perl.org>
+-0	search/1/w	#!\ /bin/perl			Perl script text executable
+-!:mime	text/x-perl
+ 0	search/1	eval\ "exec\ /bin/perl		Perl script text
+ !:mime	text/x-perl
+-0	search/1/w	#!\ /usr/bin/perl		Perl script text executable
+-!:mime	text/x-perl
+ 0	search/1	eval\ "exec\ /usr/bin/perl	Perl script text
+ !:mime	text/x-perl
+-0	search/1/w	#!\ /usr/local/bin/perl		Perl script text executable
+-!:mime	text/x-perl
+ 0	search/1	eval\ "exec\ /usr/local/bin/perl	Perl script text
+ !:mime	text/x-perl
+ 0	search/1	eval\ '(exit\ $?0)'\ &&\ eval\ 'exec	Perl script text
+ !:mime	text/x-perl
+-0	search/1	#!/usr/bin/env\ perl	Perl script text executable
+-!:mime	text/x-perl
+-0	search/1	#!\ /usr/bin/env\ perl	Perl script text executable
+-!:mime	text/x-perl
++
++0   search/1    #!
++>0  regex       \^#!.*/bin/perl.*$  Perl script text executable
++!:mime  text/x-perl
++>0  regex       \^#!.*/bin/env\ perl.*$  Perl script text executable
++!:mime  text/x-perl
++# to be tried before awk script
++!:strength + 40
+ 
+ # by Dmitry V. Levin and Alexey Tourbin
+ # check the first line

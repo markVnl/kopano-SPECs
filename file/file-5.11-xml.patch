@@ -1,0 +1,47 @@
+diff --git a/magic/Magdir/sgml b/magic/Magdir/sgml
+index 3f78c2f..991f90d 100644
+--- a/magic/Magdir/sgml
++++ b/magic/Magdir/sgml
+@@ -17,16 +17,16 @@
+ 
+ # xhtml
+ 0	string/t		\<?xml\ version="
+->15	string		>\0
+->>19	search/4096/cWbt	\<!doctype\ html	XHTML document text
++>19	search/4096/cWbt	\<!doctype\ html	XHTML document text
++>>15	string		>\0	(version %.3s)
+ !:mime	text/html
+ 0	string/t		\<?xml\ version='
+->15	string		>\0
+->>19	search/4096/cWbt	\<!doctype\ html	XHTML document text
++>19	search/4096/cWbt	\<!doctype\ html	XHTML document text
++>>15	string		>\0	(version %.3s)
+ !:mime	text/html
+ 0	string/t		\<?xml\ version="
+->15	string		>\0
+->>19	search/4096/cWbt	\<html	broken XHTML document text
++>19	search/4096/cWbt	\<html	broken XHTML document text
++>>15	string		>\0	(version %.3s)
+ !:mime	text/html
+ 
+ #------------------------------------------------------------------------------
+@@ -59,17 +59,14 @@
+ !:mime	application/xml
+ 0	string/t		\<?xml\ version="	XML
+ !:mime	application/xml
+->15	search/1	>\0			%.3s document text
++>15	string/t	>\0			%.3s document text
+ >>23	search/1	\<xsl:stylesheet	(XSL stylesheet)
+ >>24	search/1	\<xsl:stylesheet	(XSL stylesheet)
+ 0	string		\<?xml\ version='	XML
+ !:mime	application/xml
+->15	search/1	>\0			%.3s document text
++>15	string/t	>\0			%.3s document text
+ >>23	search/1	\<xsl:stylesheet	(XSL stylesheet)
+ >>24	search/1	\<xsl:stylesheet	(XSL stylesheet)
+-0	search/1/wbt	\<?xml			XML document text
+-!:mime	application/xml
+-!:strength - 10
+ 0	search/1/wt	\<?XML			broken XML document text
+ !:mime	application/xml
+ !:strength - 10

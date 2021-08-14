@@ -1,0 +1,32 @@
+From 26f146f7dcf96f8f0a5b2f0503bdb4c46b74cf56 Mon Sep 17 00:00:00 2001
+From: Christos Zoulas <christos@zoulas.com>
+Date: Wed, 31 Oct 2012 17:03:41 +0000
+Subject: [PATCH] PR/208: Fix buildid format
+
+---
+ src/readelf.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/src/readelf.c b/src/readelf.c
+index deb6d31..158f789 100644
+--- a/src/readelf.c
++++ b/src/readelf.c
+@@ -473,13 +473,14 @@ donote(struct magic_set *ms, void *vbuf, size_t offset, size_t size,
+ 
+ 	if (namesz == 4 && strcmp((char *)&nbuf[noff], "GNU") == 0 &&
+ 	    xnh_type == NT_GNU_BUILD_ID && (descsz == 16 || descsz == 20)) {
+-	    uint32_t desc[5], i;
+-	    if (file_printf(ms, ", BuildID[%s]=0x", descsz == 16 ? "md5/uuid" :
++	    uint8_t desc[20];
++	    uint32_t i;
++	    if (file_printf(ms, ", BuildID[%s]=", descsz == 16 ? "md5/uuid" :
+ 		"sha1") == -1)
+ 		    return size;
+ 	    (void)memcpy(desc, &nbuf[doff], descsz);
+-	    for (i = 0; i < descsz >> 2; i++)
+-		if (file_printf(ms, "%.8x", desc[i]) == -1)
++	    for (i = 0; i < descsz; i++)
++		if (file_printf(ms, "%02x", desc[i]) == -1)
+ 		    return size;
+ 	    *flags |= FLAGS_DID_BUILD_ID;
+ 	}

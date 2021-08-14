@@ -1,0 +1,39 @@
+From ac2eb47fe154aa01460414de987491b02ea225e2 Mon Sep 17 00:00:00 2001
+From: Christos Zoulas <christos@zoulas.com>
+Date: Sat, 15 Feb 2014 01:30:52 +0000
+Subject: [PATCH] comment out python comment magic cause other things like
+ mediawiki use it.
+
+Upstream-commit: eced9dbd4aa438de22ff453c723136beac41a558
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ magic/Magdir/python | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/magic/Magdir/python b/magic/Magdir/python
+index 53cae42..b3ee014 100644
+--- a/magic/Magdir/python
++++ b/magic/Magdir/python
+@@ -46,13 +46,13 @@
+ !:mime text/x-python
+ 
+ # comments
+-0	search/4096	'''
+->&0	regex	.*'''$	Python script text executable
+-!:mime text/x-python
++#0	search/4096	'''
++#>&0	regex	.*'''$	Python script text executable
++#!:mime text/x-python
+ 
+-0	search/4096	"""
+->&0	regex	.*"""$	Python script text executable
+-!:mime text/x-python
++#0	search/4096	"""
++#>&0	regex	.*"""$	Python script text executable
++#!:mime text/x-python
+ 
+ # try:
+ # except: or finally:
+-- 
+2.14.4
+

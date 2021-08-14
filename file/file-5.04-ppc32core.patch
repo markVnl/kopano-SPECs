@@ -1,0 +1,12 @@
+diff --git a/src/readelf.c b/src/readelf.c
+index 823db6e..9651239 100644
+--- a/src/readelf.c
++++ b/src/readelf.c
+@@ -218,6 +218,7 @@ static const size_t	prpsoffsets32[] = {
+ 	100,		/* SunOS 5.x (command line) */
+ 	84,		/* SunOS 5.x (short name) */
+ 
++    48,     /* PowerPC */
+ 	44,		/* Linux (command line) */
+ 	28,		/* Linux 2.0.36 (short name) */
+ 

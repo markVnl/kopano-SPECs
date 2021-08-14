@@ -1,0 +1,30 @@
+From af069cb735df84c45b9ab06a789eb9fd89bee38d Mon Sep 17 00:00:00 2001
+From: Christos Zoulas <christos@zoulas.com>
+Date: Wed, 11 Dec 2013 17:55:00 +0000
+Subject: [PATCH] Bump the strength of gzip and reorder printing of attributes
+ (Thomas Ledoux)
+
+Upstream-commit: 5c945517d8b4e4c7db9f132f04fa4814dc957a83
+
+Rordering of attributes dropped from this patch to stay compatible.
+
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ magic/Magdir/compress | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/magic/Magdir/compress b/magic/Magdir/compress
+index 94c209d..5dc4dcf 100644
+--- a/magic/Magdir/compress
++++ b/magic/Magdir/compress
+@@ -22,6 +22,7 @@
+ #         other than 8 ("deflate", the only method defined in RFC 1952).
+ 0       string          \037\213        gzip compressed data
+ !:mime	application/x-gzip
++!:strength * 2
+ >2	byte		<8		\b, reserved method
+ >2	byte		>8		\b, unknown method
+ >3	byte		&0x01		\b, ASCII
+-- 
+2.13.5
+

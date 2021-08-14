@@ -1,0 +1,85 @@
+diff --git a/magic/Magdir/filesystems b/magic/Magdir/filesystems
+index a2c2966..ecfa6c2 100644
+--- a/magic/Magdir/filesystems
++++ b/magic/Magdir/filesystems
+@@ -1251,7 +1251,7 @@
+ >>38917	byte     >0x33      (unknown version, ID 0x%X)
+ >>38917	byte     <0x31      (unknown version, ID 0x%X)
+ # "application id" which appears to be used as a volume label
+->32808	string    >\0       '%s'
++>32808	string/T  >\0       '%s'
+ >34816	string    \000CD001\001EL\ TORITO\ SPECIFICATION    (bootable)
+ 37633	string    CD001     ISO 9660 CD-ROM filesystem data (raw 2352 byte sectors)
+ !:mime	application/x-iso9660-image
+diff --git a/src/apprentice.c b/src/apprentice.c
+index 0490642..6dd8381 100644
+--- a/src/apprentice.c
++++ b/src/apprentice.c
+@@ -1452,6 +1452,9 @@ parse(struct magic_set *ms, struct magic_entry **mentryp, uint32_t *nmentryp,
+ 						goto bad;
+ 					m->str_flags |= PSTRING_LENGTH_INCLUDES_ITSELF;
+ 					break;
++				case CHAR_TRIM:
++					m->str_flags |= STRING_TRIM;
++					break;
+ 				default:
+ 				bad:
+ 					if (ms->flags & MAGIC_CHECK)
+diff --git a/src/file.h b/src/file.h
+index e02009f..1b5f53f 100644
+--- a/src/file.h
++++ b/src/file.h
+@@ -307,6 +307,7 @@ struct magic {
+ #define PSTRING_LEN	\
+     (PSTRING_1_BE|PSTRING_2_LE|PSTRING_2_BE|PSTRING_4_LE|PSTRING_4_BE)
+ #define PSTRING_LENGTH_INCLUDES_ITSELF		BIT(12)
++#define STRING_TRIM             BIT(13)
+ #define CHAR_COMPACT_WHITESPACE			'W'
+ #define CHAR_COMPACT_OPTIONAL_WHITESPACE	'w'
+ #define CHAR_IGNORE_LOWERCASE			'c'
+@@ -321,6 +322,7 @@ struct magic {
+ #define CHAR_PSTRING_4_BE			'L'
+ #define CHAR_PSTRING_4_LE			'l'
+ #define CHAR_PSTRING_LENGTH_INCLUDES_ITSELF     'J'
++#define CHAR_TRIM               'T'
+ #define STRING_IGNORE_CASE		(STRING_IGNORE_LOWERCASE|STRING_IGNORE_UPPERCASE)
+ #define STRING_DEFAULT_RANGE		100
+ 
+diff --git a/src/softmagic.c b/src/softmagic.c
+index 8d08cad..f084edd 100644
+--- a/src/softmagic.c
++++ b/src/softmagic.c
+@@ -451,11 +451,30 @@ mprint(struct magic_set *ms, struct magic *m)
+ 			t = ms->offset + m->vallen;
+ 		}
+ 		else {
++			char *str = p->s;
++
++			/* compute t before we mangle the string? */
++			t = ms->offset + strlen(str);
++
+ 			if (*m->value.s == '\0')
+-				p->s[strcspn(p->s, "\n")] = '\0';
+-			if (file_printf(ms, m->desc, p->s) == -1)
++				str[strcspn(str, "\n")] = '\0';
++
++			if (m->str_flags & STRING_TRIM) {
++				char *last;
++				while (isspace((unsigned char)*str))
++					str++;
++				last = str;
++				while (*last)
++					last++;
++				--last;
++				while (isspace((unsigned char)*last))
++					last--;
++				*++last = '\0';
++			}
++
++			if (file_printf(ms, m->desc, str) == -1)
+ 				return -1;
+-			t = ms->offset + strlen(p->s);
++
+ 			if (m->type == FILE_PSTRING)
+ 				t += file_pstring_length_size(m);
+ 		}

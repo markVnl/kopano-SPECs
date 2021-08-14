@@ -1,0 +1,27 @@
+From 5c9813d05317379b38e04b1b7ffb8cca6a236143 Mon Sep 17 00:00:00 2001
+From: Christos Zoulas <christos@zoulas.com>
+Date: Thu, 6 Sep 2012 14:18:50 +0000
+Subject: [PATCH] PR/198: Version should not exit 1
+
+Upstream-commit: a5a197f98d6ad293a25f3e20563aab31906c5ab3
+Signed-off-by: Kamil Dudka <kdudka@redhat.com>
+---
+ src/file.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/file.c b/src/file.c
+index 408ec63..7911b07 100644
+--- a/src/file.c
++++ b/src/file.c
+@@ -252,7 +252,7 @@ main(int argc, char *argv[])
+ 			(void)fprintf(stdout, "%s-%s\n", progname, VERSION);
+ 			(void)fprintf(stdout, "magic file from %s\n",
+ 				       magicfile);
+-			return 1;
++			return 0;
+ 		case 'z':
+ 			flags |= MAGIC_COMPRESS;
+ 			break;
+-- 
+2.5.5
+

@@ -1,0 +1,53 @@
+diff --git a/magic/Magdir/filesystems b/magic/Magdir/filesystems
+index 9172dcb..25c24ca 100644
+--- a/magic/Magdir/filesystems
++++ b/magic/Magdir/filesystems
+@@ -885,32 +885,40 @@
+ # Minix filesystems - Juan Cespedes <cespedes@debian.org>
+ 0x410	leshort		0x137f
+ !:strength / 2
+->0x402	beshort		< 100		Minix filesystem, V1, %d zones
++>0x402	beshort		< 100
++>0x402	beshort		> -1		Minix filesystem, V1, %d zones
+ >0x1e	string		minix		\b, bootable
+ 0x410	beshort		0x137f
+ !:strength / 2
+->0x402	beshort		< 100		Minix filesystem, V1 (big endian), %d zones
++>0x402	beshort		< 100
++>0x402	beshort		> -1		Minix filesystem, V1 (big endian), %d zones
+ >0x1e	string		minix		\b, bootable
+ 0x410	leshort		0x138f
+ !:strength / 2
+->0x402	beshort		< 100		Minix filesystem, V1, 30 char names, %d zones
++>0x402	beshort		< 100
++>0x402	beshort		> -1		Minix filesystem, V1, 30 char names, %d zones
+ >0x1e	string		minix		\b, bootable
+ 0x410	beshort		0x138f
+ !:strength / 2
+->0x402	beshort		< 100		Minix filesystem, V1, 30 char names (big endian), %d zones
++>0x402	beshort		< 100
++>0x402	beshort		> -1		Minix filesystem, V1, 30 char names (big endian), %d zones
+ >0x1e	string		minix		\b, bootable
+ 0x410	leshort		0x2468
+->0x402	beshort		< 100		Minix filesystem, V2, %d zones
++>0x402	beshort		< 100
++>>0x402	beshort		> -1		Minix filesystem, V2, %d zones
+ >0x1e	string		minix		\b, bootable
+ 0x410	beshort		0x2468
+->0x402	beshort		< 100		Minix filesystem, V2 (big endian), %d zones
++>0x402	beshort		< 100
++>0x402	beshort		> -1		Minix filesystem, V2 (big endian), %d zones
+ >0x1e	string		minix		\b, bootable
+ 
+ 0x410	leshort		0x2478
+->0x402	beshort		< 100		Minix filesystem, V2, 30 char names, %d zones
++>0x402	beshort		< 100
++>0x402	beshort		> -1		Minix filesystem, V2, 30 char names, %d zones
+ >0x1e	string		minix		\b, bootable
+ 0x410	leshort		0x2478
+->0x402	beshort		< 100		Minix filesystem, V2, 30 char names, %d zones
++>0x402	beshort		< 100
++>0x402	beshort		> -1		Minix filesystem, V2, 30 char names, %d zones
+ >0x1e	string		minix		\b, bootable
+ 0x410	beshort		0x2478
+ >0x402	beshort		!0		Minix filesystem, V2, 30 char names (big endian), %d zones
